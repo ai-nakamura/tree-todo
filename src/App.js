@@ -17,7 +17,7 @@ class App extends Component {
       console.log(xhr.responseText)
     })
     // open the request with the verb and the url
-    xhr.open('GET', 'localhost:8080')
+    xhr.open('GET', 'http://localhost:8080')
     // send the request
     xhr.send()
   }
