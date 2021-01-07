@@ -1,4 +1,4 @@
-const SAPPY = process.env.SAPPY || 'http://localhost:8080';
+const SAPPY = 'http://localhost:8080';
 
 /**
  * get
@@ -54,20 +54,20 @@ function request(method, body, callback) {
   // comes back) after 30 seconds.
   xhr.timeout = 30 * 1000;
 
-  xhr.addEventListener('timeout', function() {
+  xhr.addEventListener('timeout', () => {
     // The request timed out. Maybe it would have succeeded if we let it go
     // longer, but for now just consider this an errors so the UI doesn't give
     // the user false hope.
     callback(null);
   });
 
-  xhr.addEventListener('error', function() {
+  xhr.addEventListener('error', () => {
     // Maybe the user isn't connected to the Internet, for example. Or perhaps
     // the server isn't running.
     callback(null);
   });
 
-  xhr.addEventListener('load', function() {
+  xhr.addEventListener('load', () => {
     // The request completed successfully. Now we can look at what tree-sap
     // sent over.
 
@@ -76,7 +76,7 @@ function request(method, body, callback) {
       callback(xhr.responseText);
     } else if (xhr.status === 404) {
       // In the tree-sap GET request, if its database is empty it returns a 404
-      // error. For our purposes, it's easier to think of this as being an emtpy
+      // error. For our purposes, it's easier to think of this as being an empty
       // string.
       callback('');
     } else if (xhr.status >= 400) {

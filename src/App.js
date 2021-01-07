@@ -9,7 +9,7 @@ class App extends Component {
   }
 
   state = {
-    error: false,
+    networkError: false,
     httpResponse: 'loading...',
     hw: 'testing Hello World!',
   }
@@ -20,7 +20,7 @@ class App extends Component {
       if (responseText === null) {
         console.log('trouble with GET request');
         this.setState({
-          error: true
+          networkError: true
         });
         return;
       }
@@ -29,11 +29,28 @@ class App extends Component {
 
       // update the state of the component with the result here
       this.setState({
-        error: false,  // reset the error flag if it was set
+        networkError: false,  // reset the error flag if it was set
         httpResponse: responseText
       });
     });
 
+  }
+
+  postData() {
+    console.log('pushed button');
+    const data = 'POST from button ' + Math.floor(Math.random() * 100);
+
+    sap.post(data, (responseText) => {
+      if (responseText === null) {
+        console.log('Something went wrong');
+      }
+      if (responseText === '') {
+        console.log('POST worked!');
+        this.setState({
+          httpResponse: data
+        });
+      }
+    });
   }
 
   render() {
@@ -45,7 +62,7 @@ class App extends Component {
       responsePresentation = '(empty database)';
     }
 
-    if (this.state.error) {
+    if (this.state.networkError) {
       responsePresentation = '(network error)';
     }
 
@@ -58,6 +75,7 @@ class App extends Component {
         <h2>http request</h2>
         <p>{responsePresentation}</p>
         <p>{this.state.hw}</p>
+        <button onClick={ () => this.postData() }>POST to db</button>
       </div>
     );
   }
