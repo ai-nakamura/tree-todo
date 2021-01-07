@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import './App.css';
 import sprout from './sprout.png';
+import * as sap from './sap';
 
 class App extends Component {
   componentDidMount() {
@@ -8,48 +9,46 @@ class App extends Component {
   }
 
   state = {
-    html: new XMLHttpRequest(),
-    httpResponse: "err",
+    error: false,
+    httpResponse: 'loading...',
     hw: 'testing Hello World!',
-    address: 'http://localhost:8080'
   }
 
   getData() {
 
-    // create a new XMLHttpRequest
-    const xhr = new XMLHttpRequest();
-    const url = this.state.address;
+    sap.get((responseText) => {
+      if (responseText === null) {
+        console.log('trouble with GET request');
+        this.setState({
+          error: true
+        });
+        return;
+      }
 
-    // event listener functions
-    const onLoad = () => {
+      console.log('setState, httpResponse: ' + responseText);
+
       // update the state of the component with the result here
-      console.log(xhr.responseText);
-
       this.setState({
-        // httpResponse : xhr.responseText
-        html: xhr
+        error: false,  // reset the error flag if it was set
+        httpResponse: responseText
       });
-        console.log('setState, httpResponse: ' + xhr.responseText);
-    };
-
-    const onProgress = () => {
-      console.log("loading...");
-    }
-
-    // get a callback when the server responds
-    xhr.addEventListener('load', onLoad);
-    xhr.addEventListener('progress', onProgress);
-
-    // open the request with the verb and the url
-    xhr.open('GET', url);
-    // send the request
-    xhr.send();
+    });
 
   }
 
-
   render() {
     console.log("rendering...")
+
+    let responsePresentation = this.state.httpResponse;
+
+    if (responsePresentation === '') {
+      responsePresentation = '(empty database)';
+    }
+
+    if (this.state.error) {
+      responsePresentation = '(network error)';
+    }
+
     return (
       <div className="App">
         <h1>Tree</h1>
@@ -57,7 +56,7 @@ class App extends Component {
         <img src={sprout} className="Sprout" alt={"Logo, a little sprout"} />
         <br /><br />
         <h2>http request</h2>
-        <p>{this.state.html.responseText}</p>
+        <p>{responsePresentation}</p>
         <p>{this.state.hw}</p>
       </div>
     );
