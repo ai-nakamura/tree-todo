@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import TodoList from './TodoList/TodoList'
+
 import './App.css';
 import sprout from './sprout.png';
 import * as sap from './sap';
@@ -10,7 +12,7 @@ class App extends Component {
 
   state = {
     networkError: false,
-    httpResponse: 'loading...',
+    httpResponse: '',
     hw: 'testing Hello World!',
   }
 
@@ -25,8 +27,6 @@ class App extends Component {
         return;
       }
 
-      console.log('setState, httpResponse: ' + responseText);
-
       // update the state of the component with the result here
       this.setState({
         networkError: false,  // reset the error flag if it was set
@@ -38,33 +38,90 @@ class App extends Component {
 
   postData() {
     console.log('pushed button');
-    const data = 'POST from button ' + Math.floor(Math.random() * 100);
+    /*
+    const num = Math.floor(Math.random() * 100);
+    const data = `{
+      "post ${num}": "POST from button",
+      "post ${num + 1}": "POST from button"
+       }`;*/
+    const data =
+      {
+        task1: {
+          tag: "chore",
+          taskName: "Water plant",
+          taskDescription: "",
+          dueDate: "today"
+        },
+        task2: {
+          tag: "work",
+          taskName: "Udemy",
+          taskDescription: "React course. At least 5 lectures!",
+          dueDate: ""
+        }
+      };
 
-    sap.post(data, (responseText) => {
+    const dataStr = JSON.stringify(data);
+    sap.post(dataStr, (responseText) => {
       if (responseText === null) {
         console.log('Something went wrong');
       }
       if (responseText === '') {
         console.log('POST worked!');
         this.setState({
-          httpResponse: data
+          httpResponse: dataStr
         });
       }
     });
   }
 
-  render() {
-    console.log("rendering...")
+  // returns json object
+/*  parseData() {
+  else
+    {
+      // responsePresentation = JSON.stringify(responsePresentation);
+      console.log(responsePresentation);
+      // let data = JSON.parse(responsePresentation);
+      // console.log(data);
+      // let toRender = "";
+      // for (let k in data) {  // <--iterating keys
+      //   toRender += `${k}: ${data[k]}\n`;
+      // }
+      // responsePresentation = toRender;
+    }
+  }
 
-    let responsePresentation = this.state.httpResponse;
+    return responsePresentation;
+  }*/
+
+  render() {
+    // console.log("rendering...")
+
+/*    let responsePresentation = this.state.httpResponse;
+    let jsonObj = null;
 
     if (responsePresentation === '') {
       responsePresentation = '(empty database)';
     }
-
-    if (this.state.networkError) {
+    else if (this.state.networkError) {
       responsePresentation = '(network error)';
     }
+    else {
+      console.log(responsePresentation);
+      jsonObj = JSON.parse(responsePresentation);
+
+      responsePresentation = (
+        <div>
+          {console.log(jsonObj)}
+          {/!*Object has functions that return values that can be mapped:
+            .keys(obj), .values(obj), .entries(obj)*!/}
+          {Object.keys(jsonObj).map( (key)   => {
+            return (
+              <p>{key}: {jsonObj[key].taskName}</p>
+            );
+          })}
+        </div>
+      );
+    }*/
 
     return (
       <div className="App">
@@ -72,9 +129,19 @@ class App extends Component {
         <p>The start of a lovely journey</p>
         <img src={sprout} className="Sprout" alt={"Logo, a little sprout"} />
         <br /><br />
+
         <h2>http request</h2>
-        <p>{responsePresentation}</p>
+        <p>Hello hi</p>
         <p>{this.state.hw}</p>
+        {/*{responsePresentation}*/}
+        <TodoList
+          response={this.state.httpResponse}
+          netError={this.state.networkError} />
+        <br />
+
+        {/*{jsonJSX}*/}
+        <br />
+
         <button onClick={ () => this.postData() }>POST to db</button>
       </div>
     );
