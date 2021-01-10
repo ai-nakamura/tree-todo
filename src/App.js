@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button'
 
 import PostTask from './PostTasks/PostTask'
 import * as sap from './sap';
@@ -19,7 +19,7 @@ class App extends Component {
     networkError: false,
     httpResponse: '',
     hw: 'testing Hello World!',
-    myTask: "working on forms"
+    myTask: "form now updates PostTask.js state. 'Submit' button prints out new state"
   }
 
   getData() {
@@ -70,13 +70,14 @@ class App extends Component {
         <h2>{this.state.myTask}</h2>
         {/*<p>Hello hi</p>*/}
         {/*<p>{this.state.hw}</p>*/}
-        <br /><br /><br />
+        <br /><br />
         <TodoList
           response={this.state.httpResponse}
           netError={this.state.networkError} />
-        <br /><br />
+        <br />
         <PostTask />
-        {/*<Button onClick={ () => this.postData() }>POST to db</Button>*/}
+        <br />
+        <Button  variant="outline-primary" onClick={ () => this.postData() }>POST to db</Button>
       </div>
     );
   }
