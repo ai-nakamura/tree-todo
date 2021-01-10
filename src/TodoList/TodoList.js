@@ -1,5 +1,5 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import 'bootstrap';
 import Table from 'react-bootstrap/Table'
 
 const todolist = (props) => {
