@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
+
 import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
 // import Table from 'react-bootstrap/Table'
 
+import tasks from "../tasks";
+
 // make a form that takes info and POST it to server
 class PostTask extends Component {
   state = {
+    formDefault: {
+      formDropdownSelection: 'select tag',
+      formTaskName: 'task name',
+      formDueDate: 'due date',
+      formTaskDescription: 'task description'
+    },
     formData: {
       formDropdownSelection: 'select tag',
       formTaskName: 'task name',
       formDueDate: 'due date',
       formTaskDescription: 'task description'
-    }
+    },
+    data: tasks
   }
 
   dropdownHandler = event => {
@@ -33,6 +43,11 @@ class PostTask extends Component {
     // change data value
     formDataCopy[id] = event.target.value;
 
+    // if blank, turn it back to the default
+    if (formDataCopy[id] === '') {
+      formDataCopy[id] = this.state.formDefault[id];
+    }
+
     // set state
     this.setState({
       formData: formDataCopy
@@ -43,14 +58,32 @@ class PostTask extends Component {
 
   btnOnClick = event => {
     console.log(this.state.formData);
-  }
+    console.log("data is: " + JSON.stringify(this.state.data));
+    for (const obj in this.state.data) {
+      console.log(obj, this.state.data[obj]  );
+    }
+    if (
+      (this.state.formData.formDropdownSelection === this.state.formDefault.formDropdownSelection) ||
+      (this.state.formData.formTaskName === this.state.formDefault.formTaskName)
+    ) {
+      console.log("error caught");
+      alert("choose a task tag and enter a task name please :)");
+      // return (
+      //   <div className="alert alert-warning" role="alert">
+      //     This is a warning alert—check it out!
+      //   </div>
+      // );
+    }
+  };
+
 
   render() {
     return (
       <div>
         <form onSubmit={this.btnOnClick}>
-          <div className="row">
-            <Dropdown>
+          <div className="form-row">
+            {/*Notes to self -- look more into how this works. React-bootstrap*/}
+            <Dropdown className="col-2" >
               <Dropdown.Toggle variant="success" id="dropdown-basic" >
                 {this.state.formData.formDropdownSelection}
               </Dropdown.Toggle>
