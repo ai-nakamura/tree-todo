@@ -19,7 +19,7 @@ class App extends Component {
     networkError: false,
     httpResponse: '',
     hw: 'testing Hello World!',
-    myTask: "form now updates PostTask.js state. 'Submit' button prints out new state"
+    myTask: "page now shows form submissions!"
   }
 
   getData() {
@@ -42,9 +42,17 @@ class App extends Component {
 
   }
 
-  postData() {
+  // will eventually be removed when I get PostTask.js working properly
+  postData(data) {
     console.log('pushed button');
-
+    /*
+    data.push({
+      tag: 'chore',
+      taskName: 'aaa',
+      taskDescription: '',
+      dueDate: ''
+      })
+    */
     const dataStr = JSON.stringify(data);
     sap.post(dataStr, (responseText) => {
       if (responseText === null) {
@@ -59,6 +67,21 @@ class App extends Component {
     });
   }
 
+  receiveForm(newTask) {
+    // do a thing to add the new task to the existing data
+    for (const t in newTask) {
+      console.log(`${t}: ${newTask[t]}`);
+    }
+    // console.log(this.state.httpResponse);
+    let allTasks = [];
+    if (this.state.httpResponse !== '') {
+      allTasks.push(...JSON.parse(this.state.httpResponse));
+    }
+    allTasks.push(newTask)
+    console.log(allTasks);
+    this.postData(allTasks);
+  }
+
   render() {
     return (
       <div className="App container">
@@ -68,16 +91,22 @@ class App extends Component {
         <br /><br /><br />
 
         <h2>{this.state.myTask}</h2>
-        {/*<p>Hello hi</p>*/}
-        {/*<p>{this.state.hw}</p>*/}
         <br /><br />
+
         <TodoList
           response={this.state.httpResponse}
           netError={this.state.networkError} />
         <br />
-        <PostTask />
+
+        <PostTask
+          tasks={this.state.httpResponse}
+          onSubmit={this.receiveForm.bind(this)} />
+
         <br />
-        <Button  variant="outline-primary" onClick={ () => this.postData() }>POST to db</Button>
+        <Button
+          variant="outline-primary"
+          onClick={ () => this.postData(data) }>POST to db
+        </Button>
       </div>
     );
   }
