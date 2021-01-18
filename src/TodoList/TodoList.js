@@ -25,7 +25,7 @@ const todolist = (props) => {
      */
     const header =
       labels.map( (label, index) =>
-        <th key={index}>{label}</th>
+        <th key={index * 100}>{label}</th>
       )
 
     /*
@@ -34,9 +34,9 @@ const todolist = (props) => {
     const format = (task, index) => {
       const items = Object.values(task);
       const formattedCells = items.map( (item, index) =>
-          <td key={index * 100}>{item}</td>
+          <td key={index * 10}>{item}</td>
       )
-      return <tr key={index * 10}>{formattedCells}</tr>;
+      return <tr key={index} onClick={() => props.clicked(index)}>{formattedCells}</tr>;
     }
 
     const taskData = tasks.map(format);

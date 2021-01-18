@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import Button from 'react-bootstrap/Button'
+import React, { Component } from 'react';
+// import Button from 'react-bootstrap/Button'
 
-import PostTask from './PostTasks/PostTask'
+import PostTask from './PostTasks/PostTask';
 import * as sap from './sap';
-import data from './tasks'
-import TodoList from './TodoList/TodoList'
+// import data from './tasks'
+import TodoList from './TodoList/TodoList';
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,7 +19,7 @@ class App extends Component {
     networkError: false,
     httpResponse: '',
     hw: 'testing Hello World!',
-    myTask: "page now shows form submissions!"
+    myTask: 'page now shows form submissions!'
   }
 
   getData() {
@@ -45,14 +45,7 @@ class App extends Component {
   // will eventually be removed when I get PostTask.js working properly
   postData(data) {
     console.log('pushed button');
-    /*
-    data.push({
-      tag: 'chore',
-      taskName: 'aaa',
-      taskDescription: '',
-      dueDate: ''
-      })
-    */
+
     const dataStr = JSON.stringify(data);
     sap.post(dataStr, (responseText) => {
       if (responseText === null) {
@@ -65,6 +58,25 @@ class App extends Component {
         });
       }
     });
+  }
+
+  deleteData(taskIndex) {
+    console.log("deleteData");
+    console.log("row to delete: " + taskIndex);
+    const json = JSON.parse(this.state.httpResponse);
+    console.log(json.splice(taskIndex, 1));
+    console.log(json);
+    if (json.length !== 0) {
+      const toSetState = JSON.stringify(json);
+      this.setState({
+        httpResponse: toSetState
+      });
+    }
+    else {
+      this.setState({
+        httpResponse: ''
+      });
+    }
   }
 
   receiveForm(newTask) {
@@ -93,20 +105,18 @@ class App extends Component {
         <h2>{this.state.myTask}</h2>
         <br /><br />
 
-        <TodoList
-          response={this.state.httpResponse}
-          netError={this.state.networkError} />
-        <br />
-
         <PostTask
           tasks={this.state.httpResponse}
           onSubmit={this.receiveForm.bind(this)} />
-
         <br />
-        <Button
-          variant="outline-primary"
-          onClick={ () => this.postData(data) }>POST to db
-        </Button>
+
+        <TodoList
+          response={this.state.httpResponse}
+          netError={this.state.networkError}
+          clicked={this.deleteData.bind(this)}/>
+        <br />
+
+        {/*<Button variant="outline-primary" onClick={ () => this.postData(data) }>POST to db</Button>*/}
       </div>
     );
   }
