@@ -5,6 +5,12 @@ import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
+import './PostTask.css';
+
+function Emoji(props) {
+    // Fixes a text layout bug in Chrome 87 found on Jan 19, 2021.
+    return <span className='emoji'>{props.emoji}</span>;
+}
 
 // make a form that takes info and POST it to server
 class PostTask extends Component {
@@ -139,6 +145,7 @@ class PostTask extends Component {
                     onSelect={this.dropdownHandler}
                     eventKey="chore"
                     href="#/action-1">
+                    <Emoji emoji="🧹"/>
                     chore
                   </Dropdown.Item>
 
@@ -146,6 +153,7 @@ class PostTask extends Component {
                     onSelect={this.dropdownHandler}
                     eventKey="work"
                     href="#/action-2">
+                    <Emoji emoji="💼"/>
                     work
                   </Dropdown.Item>
 
