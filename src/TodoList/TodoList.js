@@ -17,15 +17,25 @@ const todolist = (props) => {
   const jsonObj = JSON.parse(props.response);
 
   const jsonToTable = (json) => {
+    // console.log(json);
     const tasks = Object.values(json);
     const labels = Object.keys(tasks[0]);
+
+    /*
+     * Sort by date
+     * eventually replace this with a toggle option
+     */
+      tasks.sort((key1, key2) => {
+        console.log(`TodoList key1: ${JSON.stringify(key1)}, key2: ${typeof key2}`)
+        return key1["dueDate"] < key2["dueDate"] ? -1 : 1
+      })
 
     /*
      * Create table header
      */
     const header =
-      labels.map( (label, index) =>
-        <th key={index * 100}>{label}</th>
+      labels.map((label, index) =>
+        <th key={index}>{label}</th>
       )
 
     /*
@@ -33,8 +43,8 @@ const todolist = (props) => {
      */
     const format = (task, index) => {
       const items = Object.values(task);
-      const formattedCells = items.map( (item, index) =>
-          <td key={index * 10}>{item}</td>
+      const formattedCells = items.map((item, index) =>
+        <td key={index}>{item}</td>
       )
       return <tr key={index} onClick={() => props.clicked(index)}>{formattedCells}</tr>;
     }
@@ -45,14 +55,14 @@ const todolist = (props) => {
     return (
       <Table striped bordered hover size={"sm"}>
         <thead>
-          <tr>{header}</tr>
+        <tr>{header}</tr>
         </thead>
         <tbody>{taskData}</tbody>
       </Table>
-      );
+    );
   }
 
-  return  jsonToTable(jsonObj);
+  return jsonToTable(jsonObj);
 
 }
 

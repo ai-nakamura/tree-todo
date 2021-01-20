@@ -19,7 +19,7 @@ class App extends Component {
     networkError: false,
     httpResponse: '',
     hw: 'testing Hello World!',
-    myTask: 'page now shows form submissions!'
+    myTask: 'Tasks now listed by ascending date order'
   }
 
   getData() {
@@ -42,11 +42,13 @@ class App extends Component {
 
   }
 
-  // will eventually be removed when I get PostTask.js working properly
   postData(data) {
     console.log('pushed button');
 
-    const dataStr = JSON.stringify(data);
+    let dataStr = JSON.stringify(data);
+    if (data === '') {
+      dataStr = data;
+    }
     sap.post(dataStr, (responseText) => {
       if (responseText === null) {
         console.log('Something went wrong');
@@ -66,17 +68,19 @@ class App extends Component {
     const json = JSON.parse(this.state.httpResponse);
     console.log(json.splice(taskIndex, 1));
     console.log(json);
+
+    let toSetState = '';
+    let toPost = '';
+
     if (json.length !== 0) {
-      const toSetState = JSON.stringify(json);
-      this.setState({
-        httpResponse: toSetState
-      });
+      toSetState = JSON.stringify(json);
+      toPost = json;
     }
-    else {
-      this.setState({
-        httpResponse: ''
-      });
-    }
+    this.setState({
+      httpResponse: toSetState
+    });
+    this.postData(toPost);
+
   }
 
   receiveForm(newTask) {

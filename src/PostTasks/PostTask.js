@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 
 import Button from 'react-bootstrap/Button';
+import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
+import Form from 'react-bootstrap/Form';
 
 
 // make a form that takes info and POST it to server
@@ -50,6 +52,7 @@ class PostTask extends Component {
     this.setState({
       formData: formDataCopy
     });
+    console.log(this.state.formData);
   };
 
   btnOnClick = event => {
@@ -95,38 +98,12 @@ class PostTask extends Component {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.btnOnClick}>
-          <div className="form-row">
+        <Form onSubmit={this.btnOnClick}>
+          <Form.Row>
             {/*Notes to self -- look more into how this works. React-bootstrap*/}
-            <Dropdown className="col-2">
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                {this.state.formData.formDropdownSelection}
-              </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  onSelect={this.dropdownHandler}
-                  eventKey="chore"
-                  href="#/action-1">
-                  chore
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onSelect={this.dropdownHandler}
-                  eventKey="work"
-                  href="#/action-2">
-                  work
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onSelect={this.dropdownHandler}
-                  eventKey="self-care"
-                  href="#/action-3">
-                  self care
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
 
-            <div className="col">
+            <Col>
               <input
                 id="formTaskName"
                 type="text"
@@ -134,20 +111,11 @@ class PostTask extends Component {
                 onChange={(event) =>
                   this.formOnChange(event, "formTaskName")}
                 placeholder={this.state.formData.formTaskName}/>
-            </div>
-            <div className="col">
-              <input
-                id="formDueDate"
-                type="text"
-                className="form-control"
-                onChange={(event) =>
-                  this.formOnChange(event, "formDueDate")}
-                placeholder={this.state.formData.formDueDate}/>
-            </div>
-          </div>
+            </Col>
+          </Form.Row>
 
-          <div className="row">
-            <div className="col">
+          <Form.Row>
+            <Col>
               <input
                 id="formTaskDescription"
                 type="text"
@@ -155,20 +123,72 @@ class PostTask extends Component {
                 onChange={(event) =>
                   this.formOnChange(event, "formTaskDescription")}
                 placeholder={this.state.formData.formTaskDescription}/>
-            </div>
+            </Col>
+          </Form.Row>
 
-          </div>
-        </form>
+          <Form.Row xs="auto">
+            <Col>
+              <Dropdown>
 
-        <Button
-          variant="primary"
-          onClick={this.btnOnClick}>
-          Submit
-        </Button>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                  {this.state.formData.formDropdownSelection}
+                </Dropdown.Toggle>
 
-      </div>
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onSelect={this.dropdownHandler}
+                    eventKey="chore"
+                    href="#/action-1">
+                    chore
+                  </Dropdown.Item>
+
+                  <Dropdown.Item
+                    onSelect={this.dropdownHandler}
+                    eventKey="work"
+                    href="#/action-2">
+                    work
+                  </Dropdown.Item>
+
+                  <Dropdown.Item
+                    onSelect={this.dropdownHandler}
+                    eventKey="self-care"
+                    href="#/action-3">
+                    self care
+                  </Dropdown.Item>
+
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+
+            <Col>
+              <input
+                id="formDueDate"
+                type="date"
+                className="form-control"
+                onChange={(event) =>
+                  this.formOnChange(event, "formDueDate")}
+                placeholder={this.state.formData.formDueDate}/>
+            </Col>
+
+            <Button
+              variant="primary"
+              onClick={this.btnOnClick}>
+              Submit
+            </Button>
+          </Form.Row>
+
+      </Form>
     );
   }
 }
 
 export default PostTask;
+/*<div className="col">
+              <input
+                id="formTaskName"
+                type="text"
+                className="form-control"
+                onChange={(event) =>
+                  this.formOnChange(event, "formTaskName")}
+                placeholder={this.state.formData.formTaskName}/>
+            </div>*/
