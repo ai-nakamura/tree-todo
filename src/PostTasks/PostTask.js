@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
-import './PostTask.css';
+import classes from './PostTask.css';
 
 function Emoji(props) {
     // Fixes a text layout bug in Chrome 87 found on Jan 19, 2021.
@@ -14,21 +14,27 @@ function Emoji(props) {
 
 // make a form that takes info and POST it to server
 class PostTask extends Component {
-  state = {
-    formDefault: {
-      formDropdownSelection: 'select tag',
-      formTaskName: 'task name',
-      formDueDate: 'due date',
-      formTaskDescription: 'task description'
-    },
-    formData: {
-      formDropdownSelection: 'select tag',
-      formTaskName: 'task name',
-      formDueDate: 'due date',
-      formTaskDescription: 'task description'
-    },
-    data: this.props.tasks
-  };
+
+  constructor(initialData) {
+    super(initialData);
+    console.log("intitial data to PostTask constructor: " + JSON.stringify(initialData));
+    this.state = {
+      formPlaceholder: {
+        formDropdownSelection: 'select tag',
+        formTaskName: 'task name',
+        formDueDate: 'due date',
+        formTaskDescription: 'task description'
+      },
+      formData: {
+        formDropdownSelection: 'select tag',
+        formTaskName: 'task name',
+        formDueDate: 'due date',
+        formTaskDescription: 'task description'
+      },
+      data: this.props.tasks
+    };
+  }
+
 
   dropdownHandler = event => {
     const formDataCopy = {
@@ -51,7 +57,7 @@ class PostTask extends Component {
 
     // if blank, turn it back to the default
     if (formDataCopy[id] === '') {
-      formDataCopy[id] = this.state.formDefault[id];
+      formDataCopy[id] = this.state.formPlaceholder[id];
     }
 
     // set state
@@ -72,11 +78,12 @@ class PostTask extends Component {
    */
 
     const form = this.state.formData;
-    const fDef = this.state.formDefault;
+    const fDef = this.state.formPlaceholder;
     const boolDropdown = form.formDropdownSelection === fDef.formDropdownSelection;
     const boolTaskName = form.formTaskName === fDef.formTaskName;
     const boolTaskDesc = form.formTaskDescription === fDef.formTaskDescription;
     const boolDueDate = form.formDueDate === fDef.formDueDate;
+    // /\d{4}-\d{2}-\d{2}/
 
     if (boolDropdown || boolTaskName) {
       console.log("error caught");
@@ -102,9 +109,10 @@ class PostTask extends Component {
   };
 
 
+
   render() {
     return (
-        <Form onSubmit={this.btnOnClick}>
+        <Form onSubmit={this.btnOnClick} className={classes.PostTask}>
           <Form.Row>
             {/*Notes to self -- look more into how this works. React-bootstrap*/}
 
@@ -143,7 +151,7 @@ class PostTask extends Component {
                 <Dropdown.Menu>
                   <Dropdown.Item
                     onSelect={this.dropdownHandler}
-                    eventKey="chore"
+                    eventKey="🧹 chore"
                     href="#/action-1">
                     <Emoji emoji="🧹"/>
                     chore
@@ -151,7 +159,7 @@ class PostTask extends Component {
 
                   <Dropdown.Item
                     onSelect={this.dropdownHandler}
-                    eventKey="work"
+                    eventKey="💼 work"
                     href="#/action-2">
                     <Emoji emoji="💼"/>
                     work
@@ -159,8 +167,9 @@ class PostTask extends Component {
 
                   <Dropdown.Item
                     onSelect={this.dropdownHandler}
-                    eventKey="self-care"
+                    eventKey="🌱 self care"
                     href="#/action-3">
+                    <Emoji emoji="🌱"/>
                     self care
                   </Dropdown.Item>
 
@@ -174,8 +183,7 @@ class PostTask extends Component {
                 type="date"
                 className="form-control"
                 onChange={(event) =>
-                  this.formOnChange(event, "formDueDate")}
-                placeholder={this.state.formData.formDueDate}/>
+                  this.formOnChange(event, "formDueDate")}/>
             </Col>
 
             <Button

@@ -1,6 +1,8 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table'
 
+import classes from './TodoList.css';
+
 const todolist = (props) => {
 
   // ** check for errors **
@@ -11,6 +13,7 @@ const todolist = (props) => {
   if (props.response === '') {
     return <p className="alert alert-info" role="alert">(empty database)</p>;
   }
+
 
 
   // TODO: check for improper data format
@@ -26,8 +29,12 @@ const todolist = (props) => {
      * eventually replace this with a toggle option
      */
       tasks.sort((key1, key2) => {
-        console.log(`TodoList key1: ${JSON.stringify(key1)}, key2: ${typeof key2}`)
-        return key1["dueDate"] < key2["dueDate"] ? -1 : 1
+        const one = key1["dueDate"];
+        const two = key2["dueDate"];
+        if (one === '') return 1;
+        if (two === '') return -1;
+        if (one === two) return 0;
+        return one < two ? -1 : 1;
       })
 
     /*
@@ -37,7 +44,9 @@ const todolist = (props) => {
       labels.map((label, index) =>
         <th key={index}>{label}</th>
       )
-
+    header.push(
+      <th key={1000000000000}>edit</th>
+    );
     /*
      * Fill in table body
      */
@@ -46,14 +55,24 @@ const todolist = (props) => {
       const formattedCells = items.map((item, index) =>
         <td key={index}>{item}</td>
       )
-      return <tr key={index} onClick={() => props.clicked(index)}>{formattedCells}</tr>;
+      return <tr
+        key={index}
+        onClick={() => props.clicked(index)}>
+          {formattedCells}
+          <td
+            key={index}
+            onClick={(event) => props.editClicked(event, index)}
+            style={{cursor: "pointer"}}>
+            <button>✏️</button>
+          </td>
+      </tr>;
     }
 
     const taskData = tasks.map(format);
 
 
     return (
-      <Table striped bordered hover size={"sm"}>
+      <Table striped bordered hover size={"sm"} className={classes.TodoList}>
         <thead>
         <tr>{header}</tr>
         </thead>

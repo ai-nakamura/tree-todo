@@ -2,3 +2,9 @@
     display: inline-block;
     width: 1.75em;
 }
+
+@media (min-width: 500px) {
+    .PostTask {
+        width: 450px;
+    }
+}

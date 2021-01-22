@@ -43,7 +43,7 @@ class App extends Component {
   }
 
   postData(data) {
-    console.log('pushed button');
+    console.log('postData');
 
     let dataStr = JSON.stringify(data);
     if (data === '') {
@@ -65,6 +65,7 @@ class App extends Component {
   deleteData(taskIndex) {
     console.log("deleteData");
     console.log("row to delete: " + taskIndex);
+
     const json = JSON.parse(this.state.httpResponse);
     console.log(json.splice(taskIndex, 1));
     console.log(json);
@@ -80,6 +81,23 @@ class App extends Component {
       httpResponse: toSetState
     });
     this.postData(toPost);
+
+  }
+
+  editData(event, taskIndex) {
+    event.stopPropagation();
+    console.log("editData");
+    console.log("row to edit: " + taskIndex);
+    // console.log(this.state.httpResponse);
+
+    let parsedData = JSON.parse(this.state.httpResponse);
+    // console.log(parsedData);
+    console.log(parsedData[taskIndex]);
+
+    // it'd be great if we could show the edit field right where the task is already
+
+
+
 
   }
 
@@ -110,6 +128,7 @@ class App extends Component {
         <br /><br />
 
         <PostTask
+          // initData={}
           tasks={this.state.httpResponse}
           onSubmit={this.receiveForm.bind(this)} />
         <br />
@@ -117,7 +136,8 @@ class App extends Component {
         <TodoList
           response={this.state.httpResponse}
           netError={this.state.networkError}
-          clicked={this.deleteData.bind(this)}/>
+          clicked={this.deleteData.bind(this)}
+          editClicked={this.editData.bind(this)}/>
         <br />
 
         {/*<Button variant="outline-primary" onClick={ () => this.postData(data) }>POST to db</Button>*/}
