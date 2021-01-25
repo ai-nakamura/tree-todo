@@ -1,0 +1,12 @@
+
+table.TodoList {
+    margin: auto;
+    width: 700px;
+}
+
+/*
+@media (min-width: 500px) {
+    table.TodoList {
+        width: 650px;
+    }
+}*/

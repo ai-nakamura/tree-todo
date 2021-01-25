@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
-import classes from './PostTask.css';
+import classes from './PostTask.module.css';
 
 function Emoji(props) {
     // Fixes a text layout bug in Chrome 87 found on Jan 19, 2021.
@@ -67,7 +67,7 @@ class PostTask extends Component {
     console.log(this.state.formData);
   };
 
-  btnOnClick = event => {
+  btnOnClick = () => {
 
     /*
     console.log(this.state.formData);

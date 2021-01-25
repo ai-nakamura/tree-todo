@@ -3,8 +3,15 @@
     width: 1.75em;
 }
 
+.PostTask {
+    margin: auto;
+    width: 500px;
+}
+
+/*
 @media (min-width: 500px) {
     .PostTask {
-        width: 450px;
+        width: 550px;
     }
 }
+*/

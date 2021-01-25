@@ -19,7 +19,7 @@ class App extends Component {
     networkError: false,
     httpResponse: '',
     hw: 'testing Hello World!',
-    myTask: 'Tasks now listed by ascending date order'
+    myTask: 'refactored TodoList.js and split it to Todo.js'
   }
 
   getData() {
