@@ -20,7 +20,7 @@ class App extends Component {
     networkError: false,
     httpResponse: '',
     hw: 'testing Hello World!',
-    myTask: 'refactored TodoList.js and split it to Todo.js',
+    myTask: 'making the new edit field',
     modalShow: false
   }
 

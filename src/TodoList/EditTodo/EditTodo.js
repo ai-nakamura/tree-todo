@@ -1,64 +1,111 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import Col from "react-bootstrap/Col";
+import classes from "../../PostTasks/PostTask.module.css";
+
+function Emoji(props) {
+  return <span className={classes.emoji}>{props.emoji}</span>;
+}
 
 // return a form in line with the table
-const editTodo = props => {
+const EditTodo = props => {
 
-  // const i = props.index;
+  const nameRef = useRef();
+  console.log(nameRef);
+  const descriptionRef = useRef();
+  const dateRef = useRef();
+  const dropdownRef = useRef();
 
-  // btnYes
+  const chore = '🧹 chore';
+  const work = '💼 work';
+  const selfCare = '🌱 self care';
 
-  // btnNo
+  const [dropdownTitle, setDropdownTitle] = useState(selfCare);
+  
+  const onDropdown = href => {
+    console.log(href.substring(1));
+    setDropdownTitle(href.substring(1));
+  };
 
-  const dropdown = (
-    <Dropdown>
+  const onSubmit = () => {
+    const name = nameRef.current.value;
+    const description = descriptionRef.current.value;
+    const date = dateRef.current.value;
+    const tag = dropdownRef.current.value;
 
-      <Dropdown.Toggle variant="success" id="dropdown-basic">
-        {this.state.formData.formDropdownSelection}
-      </Dropdown.Toggle>
+    console.log("on submit: ", tag, name, description, date);
+    // Do something with the values. Submit the edit!
+  };
 
-      <Dropdown.Menu>
-        <Dropdown.Item
-          onSelect={this.dropdownHandler}
-          eventKey="🧹 chore"
-          href="#/action-1">
-          <Emoji emoji="🧹"/>
-          chore
-        </Dropdown.Item>
+  /*  const dropdown = (
+     <Dropdown>
 
-        <Dropdown.Item
-          onSelect={this.dropdownHandler}
-          eventKey="💼 work"
-          href="#/action-2">
-          <Emoji emoji="💼"/>
-          work
-        </Dropdown.Item>
+       <Dropdown.Toggle variant="success" id="dropdown-basic">
+         {this.state.formData.formDropdownSelection}
+       </Dropdown.Toggle>
 
-        <Dropdown.Item
-          onSelect={this.dropdownHandler}
-          eventKey="🌱 self care"
-          href="#/action-3">
-          <Emoji emoji="🌱"/>
-          self care
-        </Dropdown.Item>
+       <Dropdown.Menu>
+         <Dropdown.Item
+           onSelect={this.dropdownHandler}
+           eventKey="🧹 chore"
+           href="#/action-1">
+           <Emoji emoji="🧹"/>
+           chore
+         </Dropdown.Item>
 
-      </Dropdown.Menu>
-    </Dropdown>
-  );
+         <Dropdown.Item
+           onSelect={this.dropdownHandler}
+           eventKey="💼 work"
+           href="#/action-2">
+           <Emoji emoji="💼"/>
+           work
+         </Dropdown.Item>
+
+         <Dropdown.Item
+           onSelect={this.dropdownHandler}
+           eventKey="🌱 self care"
+           href="#/action-3">
+           <Emoji emoji="🌱"/>
+           self care
+         </Dropdown.Item>
+
+       </Dropdown.Menu>
+     </Dropdown>
+   );*/
 
   return(
     <tr>
       <td>
-        dropdown
+        <DropdownButton
+          id="dropdown-basic-button"
+          title={dropdownTitle}
+          ref={dropdownRef}>
+          <Dropdown.Item href={'#' + chore} onSelect={onDropdown}>
+            {chore}
+          </Dropdown.Item>
+          <Dropdown.Item href={'#' + work} onSelect={onDropdown}>
+            {work}
+          </Dropdown.Item>
+          <Dropdown.Item href={'#' + selfCare} onSelect={onDropdown}>
+            {selfCare}
+          </Dropdown.Item>
+        </DropdownButton>
       </td>
-      <td><input type="text" placeholder="task name"/></td>
-      <td><input type="text" placeholder="task description"/></td>
-      <td><input type="date" placeholder="due date"/></td>
-      <td>yes / no</td>
+      <td>
+        <input type="text" placeholder="task name" ref={nameRef}/>
+      </td>
+      <td>
+        <input type="text" placeholder="task description" ref={descriptionRef}/>
+      </td>
+      <td>
+        <input type="date" placeholder="due date" ref={dateRef}/>
+      </td>
+      <td>
+        <button onClick={onSubmit}>yes / no</button>
+      </td>
     </tr>
   );
 };
 
-export default editTodo;
-
+export default EditTodo;
