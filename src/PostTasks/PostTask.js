@@ -9,7 +9,7 @@ import classes from './PostTask.module.css';
 
 function Emoji(props) {
     // Fixes a text layout bug in Chrome 87 found on Jan 19, 2021.
-    return <span className='emoji'>{props.emoji}</span>;
+    return <span className={classes.emoji}>{props.emoji}</span>;
 }
 
 // make a form that takes info and POST it to server
@@ -17,7 +17,6 @@ class PostTask extends Component {
 
   constructor(initialData) {
     super(initialData);
-    console.log("intitial data to PostTask constructor: " + JSON.stringify(initialData));
     this.state = {
       formPlaceholder: {
         formDropdownSelection: 'select tag',

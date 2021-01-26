@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-// import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
-import PostTask from './PostTasks/PostTask';
 import * as sap from './sap';
-// import data from './tasks'
+import data from './tasks';
+import PostTask from './PostTasks/PostTask';
 import TodoList from './TodoList/TodoList';
 
 import './App.css';
@@ -19,7 +20,8 @@ class App extends Component {
     networkError: false,
     httpResponse: '',
     hw: 'testing Hello World!',
-    myTask: 'refactored TodoList.js and split it to Todo.js'
+    myTask: 'refactored TodoList.js and split it to Todo.js',
+    modalShow: false
   }
 
   getData() {
@@ -96,10 +98,14 @@ class App extends Component {
 
     // it'd be great if we could show the edit field right where the task is already
 
-
-
-
   }
+
+  modalTest() {
+    console.log("modalTest");
+     this.setState({
+       modalShow: !this.state.modalShow
+     });
+  };
 
   receiveForm(newTask) {
     // do a thing to add the new task to the existing data
@@ -111,7 +117,7 @@ class App extends Component {
     if (this.state.httpResponse !== '') {
       allTasks.push(...JSON.parse(this.state.httpResponse));
     }
-    allTasks.push(newTask)
+    allTasks.push(newTask);
     console.log(allTasks);
     this.postData(allTasks);
   }
@@ -128,7 +134,6 @@ class App extends Component {
         <br /><br />
 
         <PostTask
-          // initData={}
           tasks={this.state.httpResponse}
           onSubmit={this.receiveForm.bind(this)} />
         <br />
@@ -140,7 +145,42 @@ class App extends Component {
           editClicked={this.editData.bind(this)}/>
         <br />
 
-        {/*<Button variant="outline-primary" onClick={ () => this.postData(data) }>POST to db</Button>*/}
+        <Button
+          variant="outline-primary"
+          onClick={ () => this.postData(data) }>
+          POST to db
+        </Button>
+
+        <Button
+          variant="outline-primary"
+          onClick={() =>
+            this.setState({
+              modalShow: !this.state.modalShow
+            })}>
+          modal test
+        </Button>
+
+        {this.state.modalShow ? (
+          <Modal show={this.state.modalShow} onHide={this.modalTest.bind(this)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Modal heading</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => console.log("close")}>
+                Close
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => console.log("save changes")}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          ) : null}
+
       </div>
     );
   }

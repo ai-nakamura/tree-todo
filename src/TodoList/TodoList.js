@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table'
 
 import classes from './TodoList.module.css';
 
+import EditTodo from './EditTodo/EditTodo';
 import Todo from './Todo/Todo';
 
 const todolist = (props) => {
@@ -13,7 +14,7 @@ const todolist = (props) => {
       <p
         className="alert alert-danger"
         role="alert">
-          (network error)
+        (network error)
       </p>
     );
   }
@@ -23,7 +24,7 @@ const todolist = (props) => {
       <p
         className="alert alert-info"
         role="alert">
-          (empty database)
+        (empty database)
       </p>
     );
   }
@@ -32,7 +33,6 @@ const todolist = (props) => {
   const jsonObj = JSON.parse(props.response);
 
   const jsonToTable = (json) => {
-    // console.log(json);
     const tasks = Object.values(json);
 
     /*
@@ -47,7 +47,6 @@ const todolist = (props) => {
         if (one === two) return 0;
         return one < two ? -1 : 1;
       });
-
 
     const header =
       <tr>
@@ -67,19 +66,23 @@ const todolist = (props) => {
         editClicked={props.editClicked} // passing through props, can reformat?
       />
     );
+    taskData.push(<EditTodo key="no"/>)
 
 
     return (
-      <Table
-        striped bordered hover size={"sm"}
-        className={classes.TodoList}>
-          <thead>
-            {header}
-          </thead>
-          <tbody>
-            {taskData}
-          </tbody>
-      </Table>
+      <>
+        <Table
+          striped bordered hover size="sm"
+          className={classes.TodoList}>
+            <thead>
+              {header}
+            </thead>
+            <tbody>
+              {taskData}
+            </tbody>
+        </Table>
+          <button>new task</button>
+      </>
     );
   }
 
