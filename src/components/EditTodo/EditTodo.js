@@ -28,6 +28,7 @@ const EditTodo = props => {
   };
 
   const onSubmit = () => {
+
     const name = nameRef.current.value;
     const description = descriptionRef.current.value;
     const date = dateRef.current.value;
@@ -36,6 +37,9 @@ const EditTodo = props => {
     // TODO: tag not working
     console.log("on submit: ", tag, name, description, date);
     // Do something with the values. Submit the edit!
+
+    // TODO: editIndex needs to be set to -1 somehow
+
   };
 
   /*  const dropdown = (

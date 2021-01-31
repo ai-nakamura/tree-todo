@@ -9,35 +9,47 @@ import Todo from '../../components/Todo/Todo';
 class Todolist extends Component {
 
   state = {
-    tasks: [],
     editIndex: -1
   }
 
-  static getDerivedStateFromProps (props, state) {
-    // TODO: check for improper data format
-    if (props.response) {
-      return { tasks: JSON.parse(props.response) };
-    }
-    return { tasks: [] };
+  editClicked(event, taskIndex) {
+
+    event.stopPropagation();
+    console.log("editData");
+    console.log("row to edit: " + taskIndex);
+    console.log(this.props.tasks[taskIndex]);
+
+    this.setState({
+      editIndex: taskIndex
+    });
+
   }
 
   render () {
+
+    const netError = this.props.netError;
+    const tasks = [...this.props.tasks];
+    const clicked = this.props.clicked;
+    const editClicked = this.props.editClicked;
+
+    const editIndex = this.state.editIndex;
+
     // ** check for errors **
-    if (this.props.netError) { // this.state.networkError
+    if (netError) {
       return <p className="alert alert-danger" role="alert">(network error)</p>;
     }
 
-    if (this.props.response === '') {
+    if (tasks.length === 0) {
       return <p className="alert alert-info" role="alert">(empty database)</p>;
     }
 
-    const jsonToTable = (json) => {
+    const jsonToTable = () => {
 
       /*
        * Sort by date
        * eventually replace this with a toggle option
        */
-      this.state.tasks.sort((key1, key2) => {
+      tasks.sort((key1, key2) => {
         const one = key1.dueDate;
         const two = key2.dueDate;
         if (one === '') return 1;
@@ -55,16 +67,17 @@ class Todolist extends Component {
           <th>edit</th>
         </tr>;
 
-      const taskData = this.state.tasks.map((task, index) =>
+      const taskData = tasks.map((task, index) =>
         <Todo
           task={task}
           key={index}
           index={index}
-          clicked={this.props.clicked}
-          editClicked={this.props.editClicked} // passing through props, can reformat?
+          clicked={clicked}
+          editClicked={editClicked} // passing through props, can reformat?
         />
       );
 
+      // TODO: Use editIndex to determine where to have EditTodo...
       taskData.push(<EditTodo key='no'/>);
 
       return (
@@ -83,7 +96,8 @@ class Todolist extends Component {
         </>
       );
     }
-  return jsonToTable(this.state.tasks);
+
+    return jsonToTable();
   }
 
 

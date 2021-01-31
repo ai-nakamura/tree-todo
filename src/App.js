@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 
 import * as sap from './sap';
 import data from './tasks';
@@ -18,10 +17,8 @@ class App extends Component {
 
   state = {
     networkError: false,
-    httpResponse: '',
-    hw: 'testing Hello World!',
+    tasks: [],
     myTask: 'making the new edit field',
-    modalShow: false
   }
 
   getData() {
@@ -35,10 +32,15 @@ class App extends Component {
         return;
       }
 
+      let tasks = [];
+      if (responseText !== '') {
+        tasks = JSON.parse(responseText);
+      }
+
       // update the state of the component with the result here
       this.setState({
         networkError: false,  // reset the error flag if it was set
-        httpResponse: responseText
+        tasks: tasks
       });
     });
 
@@ -48,8 +50,8 @@ class App extends Component {
     console.log('postData');
 
     let dataStr = JSON.stringify(data);
-    if (data === '') {
-      dataStr = data;
+    if (dataStr === '[]') {
+      dataStr = '';
     }
     sap.post(dataStr, (responseText) => {
       if (responseText === null) {
@@ -58,65 +60,50 @@ class App extends Component {
       if (responseText === '') {
         console.log('POST worked!');
         this.setState({
-          httpResponse: dataStr
+          tasks: data
         });
       }
     });
   }
 
   deleteData(taskIndex) {
+
     console.log("deleteData");
     console.log("row to delete: " + taskIndex);
 
-    const json = JSON.parse(this.state.httpResponse);
-    console.log(json.splice(taskIndex, 1));
-    console.log(json);
+    const toPost = [...this.state.tasks];
+    console.log(toPost);
 
-    let toSetState = '';
-    let toPost = '';
+    const deleted = toPost.splice(taskIndex, 1);
+    console.log(deleted);
 
-    if (json.length !== 0) {
-      toSetState = JSON.stringify(json);
-      toPost = json;
-    }
-    this.setState({
-      httpResponse: toSetState
-    });
     this.postData(toPost);
 
   }
 
   editData(event, taskIndex) {
+
     event.stopPropagation();
     console.log("editData");
     console.log("row to edit: " + taskIndex);
-    // console.log(this.state.httpResponse);
 
-    let parsedData = JSON.parse(this.state.httpResponse);
+    let parsedData = [...this.state.tasks];
     // console.log(parsedData);
     console.log(parsedData[taskIndex]);
 
     // it'd be great if we could show the edit field right where the task is already
+    // TODO?
 
   }
-
-  modalTest() {
-    console.log("modalTest");
-     this.setState({
-       modalShow: !this.state.modalShow
-     });
-  };
 
   receiveForm(newTask) {
     // do a thing to add the new task to the existing data
     for (const t in newTask) {
       console.log(`${t}: ${newTask[t]}`);
     }
-    // console.log(this.state.httpResponse);
+    // console.log(this.state.tasks);
     let allTasks = [];
-    if (this.state.httpResponse !== '') {
-      allTasks.push(...JSON.parse(this.state.httpResponse));
-    }
+    allTasks.push(...this.state.tasks);
     allTasks.push(newTask);
     console.log(allTasks);
     this.postData(allTasks);
@@ -134,12 +121,12 @@ class App extends Component {
         <br /><br />
 {/*
         <PostTask
-          tasks={this.state.httpResponse}
+          tasks={this.state.state}
           onSubmit={this.receiveForm.bind(this)} />
         <br />*/}
 
         <TodoList
-          response={this.state.httpResponse}
+          tasks={this.state.tasks}
           netError={this.state.networkError}
           clicked={this.deleteData.bind(this)}
           editClicked={this.editData.bind(this)}/>
@@ -150,36 +137,6 @@ class App extends Component {
           onClick={ () => this.postData(data) }>
           POST to db
         </Button>
-
-        <Button
-          variant="outline-primary"
-          onClick={() =>
-            this.setState({
-              modalShow: !this.state.modalShow
-            })}>
-          modal test
-        </Button>
-
-        {this.state.modalShow ? (
-          <Modal show={this.state.modalShow} onHide={this.modalTest.bind(this)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Modal heading</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={() => console.log("close")}>
-                Close
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => console.log("save changes")}>
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          ) : null}
 
       </div>
     );

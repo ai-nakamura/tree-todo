@@ -7,7 +7,7 @@ const todo = props => {
 
   const editButton =
     <td
-      onClick={(event) => props.editClicked(event, i)}
+      onClick={event => props.editClicked(event, i)}
       style={{cursor: "pointer"}}>
       <button>✏️</button>
     </td>;
