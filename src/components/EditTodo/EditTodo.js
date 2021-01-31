@@ -1,18 +1,17 @@
 import React, { useRef, useState } from 'react';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import Col from "react-bootstrap/Col";
-import classes from "../../PostTasks/PostTask.module.css";
+// import Col from "react-bootstrap/Col";
+// import classes from "../../PostTasks/PostTask.module.css";
 
-function Emoji(props) {
-  return <span className={classes.emoji}>{props.emoji}</span>;
-}
+// function Emoji(props) {
+//   return <span className={classes.emoji}>{props.emoji}</span>;
+// }
 
 // return a form in line with the table
 const EditTodo = props => {
 
   const nameRef = useRef();
-  console.log(nameRef);
   const descriptionRef = useRef();
   const dateRef = useRef();
   const dropdownRef = useRef();
@@ -22,7 +21,7 @@ const EditTodo = props => {
   const selfCare = '🌱 self care';
 
   const [dropdownTitle, setDropdownTitle] = useState(selfCare);
-  
+
   const onDropdown = href => {
     console.log(href.substring(1));
     setDropdownTitle(href.substring(1));
@@ -34,6 +33,7 @@ const EditTodo = props => {
     const date = dateRef.current.value;
     const tag = dropdownRef.current.value;
 
+    // TODO: tag not working
     console.log("on submit: ", tag, name, description, date);
     // Do something with the values. Submit the edit!
   };

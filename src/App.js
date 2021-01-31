@@ -4,12 +4,12 @@ import Modal from 'react-bootstrap/Modal';
 
 import * as sap from './sap';
 import data from './tasks';
-import PostTask from './PostTasks/PostTask';
-import TodoList from './TodoList/TodoList';
+// import PostTask from './PostTasks/PostTask';
+import TodoList from './containers/TodoList/TodoList';
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import sprout from './sprout.png';
+import sprout from './asset/images/sprout.png';
 
 class App extends Component {
   componentDidMount() {
@@ -128,15 +128,15 @@ class App extends Component {
         <h1>Tree</h1>
         <p>The start of a lovely journey</p>
         <img src={sprout} className="Sprout" alt={"Logo, a little sprout"} />
-        <br /><br /><br />
-
-        <h2>{this.state.myTask}</h2>
         <br /><br />
 
+        <h3>{this.state.myTask}</h3>
+        <br /><br />
+{/*
         <PostTask
           tasks={this.state.httpResponse}
           onSubmit={this.receiveForm.bind(this)} />
-        <br />
+        <br />*/}
 
         <TodoList
           response={this.state.httpResponse}
