@@ -32,7 +32,7 @@ class Todolist extends Component {
     const clicked = this.props.clicked;
     const editClicked = this.props.editClicked;
 
-    const editIndex = this.state.editIndex;
+    //const editIndex = this.state.editIndex;
 
     // ** check for errors **
     if (netError) {
