@@ -37,6 +37,10 @@ class Todolist extends Component {
     console.log("row to edit: " + taskIndex);
     console.log(this.state.tasks[taskIndex]);
 
+    // replace the editClicked one with an EditTodo
+    // with the fields pre-filled with the ones
+    // already written
+
     this.setState({
       editIndex: taskIndex,
       editing: true
@@ -50,7 +54,7 @@ class Todolist extends Component {
     // console.log(this.props);
     const netError = this.props.netError;
     const tasks = [...this.props.tasks];
-    const clicked = this.props.clicked;
+    // const clicked = this.props.clicked;
     const editClicked = this.props.editClicked;
 
     //const editIndex = this.state.editIndex;
