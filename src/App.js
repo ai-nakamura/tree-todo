@@ -18,7 +18,7 @@ class App extends Component {
   state = {
     networkError: false,
     tasks: [],
-    myTask: 'making the new edit field',
+    myTask: 'refactored todoList so that tasks are now react elements',
   }
 
   getData() {
@@ -81,18 +81,23 @@ class App extends Component {
 
   }
 
-  editData(event, taskIndex) {
+  editData(event, taskIndex, newTask) {
 
     event.stopPropagation();
     console.log("editData");
     console.log("row to edit: " + taskIndex);
 
     let parsedData = [...this.state.tasks];
-    // console.log(parsedData);
-    console.log(parsedData[taskIndex]);
+    console.log(taskIndex);
 
-    // it'd be great if we could show the edit field right where the task is already
-    // TODO?
+    if (taskIndex >= parsedData.length) {
+      // if edit item is >= data length, it's a new item
+      parsedData.push(newTask);
+      console.log(parsedData);
+    }
+    // else we need to replace a row
+
+    this.postData(parsedData);
 
   }
 
@@ -113,29 +118,29 @@ class App extends Component {
     return (
       <div className="App container">
         <h1>Tree</h1>
-        <p>The start of a lovely journey</p>
+        <p>the start of a lovely journey</p>
         <img src={sprout} className="Sprout" alt={"Logo, a little sprout"} />
         <br /><br />
 
         <h3>{this.state.myTask}</h3>
         <br /><br />
-{/*
+        {/*
         <PostTask
           tasks={this.state.state}
           onSubmit={this.receiveForm.bind(this)} />
         <br />*/}
 
         <TodoList
-          tasks={this.state.tasks}
           netError={this.state.networkError}
+          tasks={this.state.tasks}
           clicked={this.deleteData.bind(this)}
-          editClicked={this.editData.bind(this)}/>
+          note={'editClicked={this.editData.bind(this)'}/>
         <br />
 
         <Button
           variant="outline-primary"
           onClick={ () => this.postData(data) }>
-          POST to db
+          test data
         </Button>
 
       </div>

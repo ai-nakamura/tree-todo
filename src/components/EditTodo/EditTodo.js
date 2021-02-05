@@ -8,6 +8,19 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 //   return <span className={classes.emoji}>{props.emoji}</span>;
 // }
 
+
+/*
+< EditTodo
+    nameRef=''
+    descriptionRef=''
+    dateRef=''
+    dropdownRef ='' />
+
+
+ */
+
+
+
 // return a form in line with the table
 const EditTodo = props => {
 
@@ -22,23 +35,30 @@ const EditTodo = props => {
 
   const [dropdownTitle, setDropdownTitle] = useState(selfCare);
 
+
   const onDropdown = href => {
     console.log(href.substring(1));
     setDropdownTitle(href.substring(1));
   };
 
-  const onSubmit = () => {
+  const onSubmit = event => {
 
-    const name = nameRef.current.value;
-    const description = descriptionRef.current.value;
-    const date = dateRef.current.value;
-    const tag = dropdownRef.current.value;
+    const taskName = nameRef.current.value;
+    const taskDescription = descriptionRef.current.value;
+    const dueDate = dateRef.current.value;
+    const tag = dropdownRef.current.innerText;
 
     // TODO: tag not working
-    console.log("on submit: ", tag, name, description, date);
+    console.log("on submit: $" + tag + "$ ", taskName, taskDescription, dueDate);
     // Do something with the values. Submit the edit!
 
-    // TODO: editIndex needs to be set to -1 somehow
+     if (taskName === '') {
+       alert("please choose a taskname");
+       return;
+     }
+
+    props.editClicked(event, props.id, {tag, taskName, taskDescription, dueDate});
+    // props.editing
 
   };
 
@@ -85,28 +105,51 @@ const EditTodo = props => {
           id="dropdown-basic-button"
           title={dropdownTitle}
           ref={dropdownRef}>
-          <Dropdown.Item href={'#' + chore} onSelect={onDropdown}>
+
+          <Dropdown.Item
+            href={'#' + chore}
+            onSelect={onDropdown}>
             {chore}
           </Dropdown.Item>
-          <Dropdown.Item href={'#' + work} onSelect={onDropdown}>
+
+          <Dropdown.Item
+            href={'#' + work}
+            onSelect={onDropdown}>
             {work}
           </Dropdown.Item>
-          <Dropdown.Item href={'#' + selfCare} onSelect={onDropdown}>
+
+          <Dropdown.Item
+            href={'#' + selfCare}
+            onSelect={onDropdown}>
             {selfCare}
           </Dropdown.Item>
+
         </DropdownButton>
+
       </td>
       <td>
-        <input type="text" placeholder="task name" ref={nameRef}/>
+        <input
+          type="text"
+          placeholder="task name"
+          ref={nameRef}/>
       </td>
       <td>
-        <input type="text" placeholder="task description" ref={descriptionRef}/>
+        <input
+          type="text"
+          placeholder="task description"
+          ref={descriptionRef}/>
       </td>
       <td>
-        <input type="date" placeholder="due date" ref={dateRef}/>
+        <input
+          type="date"
+          placeholder="due date"
+          ref={dateRef}/>
       </td>
       <td>
-        <button onClick={onSubmit}>yes / no</button>
+        <button
+          onClick={onSubmit}>
+          ✅
+        </button>
       </td>
     </tr>
   );

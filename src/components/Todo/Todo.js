@@ -7,6 +7,7 @@ const todo = props => {
 
   const editButton =
     <td
+      // onClick={() => console.log('etodoo')}
       onClick={event => props.editClicked(event, i)}
       style={{cursor: "pointer"}}>
       <button>✏️</button>

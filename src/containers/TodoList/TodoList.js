@@ -9,24 +9,45 @@ import Todo from '../../components/Todo/Todo';
 class Todolist extends Component {
 
   state = {
-    editIndex: -1
+    tasks: [],
+    editIndex: -1,
+    editing: false
   }
 
-  editClicked(event, taskIndex) {
+  componentDidMount() {
+
+    const taskData = this.props.tasks.map((task, index) =>
+      <Todo
+        task={task}
+        key={index}
+        index={index}
+        clicked={this.props.clicked}
+        editClicked={this.editClicked}/>
+    );
+
+    console.log( taskData );
+    this.setState({ tasks: taskData });
+  }
+
+
+  editClicked = (event, taskIndex) => {
 
     event.stopPropagation();
     console.log("editData");
     console.log("row to edit: " + taskIndex);
-    console.log(this.props.tasks[taskIndex]);
+    console.log(this.state.tasks[taskIndex]);
 
     this.setState({
-      editIndex: taskIndex
+      editIndex: taskIndex,
+      editing: true
     });
 
   }
 
+
   render () {
 
+    // console.log(this.props);
     const netError = this.props.netError;
     const tasks = [...this.props.tasks];
     const clicked = this.props.clicked;
@@ -40,7 +61,22 @@ class Todolist extends Component {
     }
 
     if (tasks.length === 0) {
-      return <p className="alert alert-info" role="alert">(empty database)</p>;
+      return (
+        <>
+          <p className="alert alert-info" role="alert">(empty database)</p>
+          <Table
+            striped bordered hover size="sm"
+            className={classes.TodoList}>
+            <tbody>
+              <EditTodo
+                key='no'
+                editClicked={editClicked}
+                id='0'
+              />
+            </tbody>
+          </Table>
+        </>
+      )
     }
 
     const jsonToTable = () => {
@@ -67,18 +103,17 @@ class Todolist extends Component {
           <th>edit</th>
         </tr>;
 
-      const taskData = tasks.map((task, index) =>
+/*      const taskData = tasks.map((task, index) =>
         <Todo
           task={task}
           key={index}
           index={index}
           clicked={clicked}
-          editClicked={editClicked} // passing through props, can reformat?
-        />
-      );
+          editClicked={this.editClicked}/>
+      );*/
 
       // TODO: Use editIndex to determine where to have EditTodo...
-      taskData.push(<EditTodo key='no'/>);
+
 
       return (
         <>
@@ -86,13 +121,26 @@ class Todolist extends Component {
             striped bordered hover size="sm"
             className={classes.TodoList}>
             <thead>
-            {header}
+              {header}
             </thead>
             <tbody>
-            {taskData}
+              {this.state.tasks}
+              {
+                this.state.editing ?
+                  <EditTodo
+                    key='no'
+                    editClicked={this.editClicked}
+                    id={this.state.tasks.length}
+                  /> : null
+              }
             </tbody>
           </Table>
-          <button onClick={() => console.log('clicked')}>new task</button>
+          <button
+            onClick={ () => {
+              this.setState({ editing: !this.state.editing })
+            }}>
+            new task
+          </button>
         </>
       );
     }
