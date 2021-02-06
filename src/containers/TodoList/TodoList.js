@@ -9,24 +9,8 @@ import Todo from '../../components/Todo/Todo';
 class Todolist extends Component {
 
   state = {
-    tasks: [],
     editIndex: -1,
     editing: false
-  }
-
-  componentDidMount() {
-
-    const taskData = this.props.tasks.map((task, index) =>
-      <Todo
-        task={task}
-        key={index}
-        index={index}
-        clicked={this.props.clicked}
-        editClicked={this.editClicked}/>
-    );
-
-    console.log( taskData );
-    this.setState({ tasks: taskData });
   }
 
 
@@ -35,7 +19,6 @@ class Todolist extends Component {
     event.stopPropagation();
     console.log("editData");
     console.log("row to edit: " + taskIndex);
-    console.log(this.state.tasks[taskIndex]);
 
     // replace the editClicked one with an EditTodo
     // with the fields pre-filled with the ones
@@ -48,16 +31,17 @@ class Todolist extends Component {
 
   }
 
-
+  // render runs twice: once when the component is mounted,
+  // and a second time when the http call finishes and App.js re-renders
   render () {
 
-    // console.log(this.props);
+
     const netError = this.props.netError;
     const tasks = [...this.props.tasks];
     // const clicked = this.props.clicked;
     const editClicked = this.props.editClicked;
 
-    //const editIndex = this.state.editIndex;
+    // console.log(tasks);
 
     // ** check for errors **
     if (netError) {
@@ -107,7 +91,24 @@ class Todolist extends Component {
           <th>edit</th>
         </tr>;
 
-/*      const taskData = tasks.map((task, index) =>
+      const todoList =
+        tasks.map((task, index) => {
+          if (index === this.state.editIndex) {
+            console.log('edit caught');
+          }
+          return (
+            <Todo
+              task={task}
+              key={index}
+              index={index}
+              clicked={this.props.clicked}
+              editClicked={this.editClicked}/>
+          );
+        });
+
+
+
+    /*  const taskData = tasks.map((task, index) =>
         <Todo
           task={task}
           key={index}
@@ -118,7 +119,6 @@ class Todolist extends Component {
 
       // TODO: Use editIndex to determine where to have EditTodo...
 
-
       return (
         <>
           <Table
@@ -128,13 +128,13 @@ class Todolist extends Component {
               {header}
             </thead>
             <tbody>
-              {this.state.tasks}
+              {todoList}
               {
                 this.state.editing ?
                   <EditTodo
                     key='no'
                     editClicked={this.editClicked}
-                    id={this.state.tasks.length}
+                    id={this.props.tasks.length}
                   /> : null
               }
             </tbody>
