@@ -95,6 +95,14 @@ class Todolist extends Component {
         tasks.map((task, index) => {
           if (index === this.state.editIndex) {
             console.log('edit caught');
+            return(
+              <EditTodo
+                key='no'
+                editClicked={this.editClicked}
+                id={index}
+                task={task}
+              />
+            )
           }
           return (
             <Todo

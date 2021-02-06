@@ -35,6 +35,18 @@ const EditTodo = props => {
 
   const [dropdownTitle, setDropdownTitle] = useState(selfCare);
 
+  // place holders
+  let ph_dropDown = dropdownTitle;
+  let ph_taskName = "task name";
+  let ph_taskDescription = "task description";
+  let ph_dueDate = "due date";
+
+  if (props.task) {
+    ph_dropDown = props.task.tag;
+    ph_taskName = props.task.taskName;
+    ph_taskDescription = props.task.taskDescription;
+    ph_dueDate = props.task.dueDate;
+  }
 
   const onDropdown = href => {
     console.log(href.substring(1));
@@ -47,6 +59,8 @@ const EditTodo = props => {
     const taskDescription = descriptionRef.current.value;
     const dueDate = dateRef.current.value;
     const tag = dropdownRef.current.innerText;
+
+
 
     // TODO: tag not working
     console.log("on submit: $" + tag + "$ ", taskName, taskDescription, dueDate);
@@ -103,7 +117,7 @@ const EditTodo = props => {
       <td>
         <DropdownButton
           id="dropdown-basic-button"
-          title={dropdownTitle}
+          title={ph_dropDown}
           ref={dropdownRef}>
 
           <Dropdown.Item
@@ -130,19 +144,19 @@ const EditTodo = props => {
       <td>
         <input
           type="text"
-          placeholder="task name"
+          placeholder={ph_taskName}
           ref={nameRef}/>
       </td>
       <td>
         <input
           type="text"
-          placeholder="task description"
+          placeholder={ph_taskDescription}
           ref={descriptionRef}/>
       </td>
       <td>
         <input
           type="date"
-          placeholder="due date"
+          placeholder={ph_dueDate}
           ref={dateRef}/>
       </td>
       <td>

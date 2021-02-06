@@ -18,7 +18,7 @@ class App extends Component {
   state = {
     networkError: false,
     tasks: [],
-    myTask: 'refactored todoList so that tasks are now react elements',
+    myTask: 'edit button now shows an edit field!',
   }
 
   getData() {
