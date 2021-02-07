@@ -14,22 +14,32 @@ class Todolist extends Component {
   }
 
 
-  editClicked = (event, taskIndex) => {
+  editClicked = (event, taskIndex, updatedTask) => {
 
     event.stopPropagation();
     console.log("editData");
     console.log("row to edit: " + taskIndex);
-
-    // replace the editClicked one with an EditTodo
-    // with the fields pre-filled with the ones
-    // already written
+    console.log(taskIndex);
+    console.log(updatedTask);
 
     this.setState({
       editIndex: taskIndex,
-      editing: true
+      // editing: true
     });
-
+    // this.props.submitClicked(updatedTask, taskIndex);
   }
+
+  submitClicked = (submittedTask) => {
+    if (submittedTask === null) {
+      console.log('nothing changed confirmed');
+      this.setState({
+        editIndex: -1,
+        // editing: false
+      });  
+
+    }
+  }
+
 
   // render runs twice: once when the component is mounted,
   // and a second time when the http call finishes and App.js re-renders
@@ -58,9 +68,9 @@ class Todolist extends Component {
             <tbody>
               <EditTodo
                 key='no'
-                editClicked={editClicked}
                 id='0'
-              />
+                editClicked={editClicked}
+                submitClicked={this.submitClicked}/>
             </tbody>
           </Table>
         </>
@@ -98,10 +108,10 @@ class Todolist extends Component {
             return(
               <EditTodo
                 key='no'
-                editClicked={this.editClicked}
                 id={index}
                 task={task}
-              />
+                editClicked={this.editClicked}
+                submitClicked={this.submitClicked}/>
             )
           }
           return (
@@ -141,9 +151,10 @@ class Todolist extends Component {
                 this.state.editing ?
                   <EditTodo
                     key='no'
-                    editClicked={this.editClicked}
                     id={this.props.tasks.length}
-                  /> : null
+                    editClicked={this.editClicked}
+                    submitClicked={this.submitClicked}/>
+                  : null
               }
             </tbody>
           </Table>

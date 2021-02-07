@@ -81,7 +81,7 @@ class App extends Component {
 
   }
 
-  editData(event, taskIndex, newTask) {
+/*  editData(event, taskIndex, newTask) {
 
     event.stopPropagation();
     console.log("editData");
@@ -99,9 +99,9 @@ class App extends Component {
 
     this.postData(parsedData);
 
-  }
+  }*/
 
-  receiveForm(newTask) {
+/*  receiveForm(newTask) {
     // do a thing to add the new task to the existing data
     for (const t in newTask) {
       console.log(`${t}: ${newTask[t]}`);
@@ -112,7 +112,14 @@ class App extends Component {
     allTasks.push(newTask);
     console.log(allTasks);
     this.postData(allTasks);
+  }*/
+
+  receiveEdit(task, taskIndex) {
+    // if index > length, push to end
+    // replace whatever task index with this new one
+    console.log(task, taskIndex);
   }
+
 
   render() {
     return (
@@ -134,6 +141,7 @@ class App extends Component {
           netError={this.state.networkError}
           tasks={this.state.tasks}
           clicked={this.deleteData.bind(this)}
+          // submitClicked={this.receiveEdit.bind(this)}
           note={'editClicked={this.editData.bind(this)'}/>
         <br />
 

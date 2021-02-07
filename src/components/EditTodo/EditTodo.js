@@ -53,25 +53,56 @@ const EditTodo = props => {
     setDropdownTitle(href.substring(1));
   };
 
+
   const onSubmit = event => {
 
-    const taskName = nameRef.current.value;
-    const taskDescription = descriptionRef.current.value;
-    const dueDate = dateRef.current.value;
-    const tag = dropdownRef.current.innerText;
+    let tag = dropdownRef.current.innerText;
+    let taskName = nameRef.current.value;
+    let taskDescription = descriptionRef.current.value;
+    let dueDate = dateRef.current.value; // sometimes returns "today". Might become a problem
 
+    // fix values
+    if (taskName === '') {
+      taskName = ph_taskName;
+    }
+    if (taskDescription === '') {
+      taskDescription = ph_taskDescription;
+    }
+    if (dueDate === '') {
+      dueDate = ph_dueDate;
+    }
 
+    if (
+      tag === props.task.tag &&
+      taskName === props.task.taskName &&
+      taskDescription === props.task.taskDescription &&
+      dueDate === props.task.dueDate
+    ) {
+      console.log('nothing changed');
+      props.submitClicked(null);
+      return;
+    }
 
-    // TODO: tag not working
-    console.log("on submit: $" + tag + "$ ", taskName, taskDescription, dueDate);
-    // Do something with the values. Submit the edit!
-
-     if (taskName === '') {
-       alert("please choose a taskname");
+     if (!props.task && taskName === ph_taskName) {
+       alert("please choose a task name");
        return;
      }
 
-    props.editClicked(event, props.id, {tag, taskName, taskDescription, dueDate});
+
+    const updatedTask = {
+      tag: tag,
+      taskName: taskName,
+      taskDescription: taskDescription,
+      dueDate: dueDate
+    }
+
+    console.log(updatedTask);
+    // console.log("on submit: $" + tag + "$ ", taskName, taskDescription, typeof dueDate);
+    // Do something with the values. Submit the edit!
+
+
+    props.editClicked(event, props.id, updatedTask);
+    // props.editClicked(event, props.id, updatedTask);
     // props.editing
 
   };
