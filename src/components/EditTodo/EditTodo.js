@@ -72,6 +72,11 @@ const EditTodo = props => {
       dueDate = ph_dueDate;
     }
 
+    if (!props.task && taskName === ph_taskName) {
+       alert("please choose a task name");
+       return;
+     }
+
     if (
       tag === props.task.tag &&
       taskName === props.task.taskName &&
@@ -82,12 +87,6 @@ const EditTodo = props => {
       props.submitClicked(null);
       return;
     }
-
-     if (!props.task && taskName === ph_taskName) {
-       alert("please choose a task name");
-       return;
-     }
-
 
     const updatedTask = {
       tag: tag,
@@ -101,10 +100,8 @@ const EditTodo = props => {
     // Do something with the values. Submit the edit!
 
 
-    props.editClicked(event, props.id, updatedTask);
     // props.editClicked(event, props.id, updatedTask);
-    // props.editing
-
+    props.submitClicked(updatedTask, props.id);
   };
 
   /*  const dropdown = (

@@ -14,13 +14,14 @@ class Todolist extends Component {
   }
 
 
+  // wait, shouldn't this be Todo's responsibility?
   editClicked = (event, taskIndex, updatedTask) => {
 
     event.stopPropagation();
-    console.log("editData");
-    console.log("row to edit: " + taskIndex);
-    console.log(taskIndex);
-    console.log(updatedTask);
+    console.log('[TodoList] editClicked');
+    console.log('row to edit: ' + taskIndex);
+    // console.log(taskIndex);
+    // console.log(updatedTask);
 
     this.setState({
       editIndex: taskIndex,
@@ -29,14 +30,29 @@ class Todolist extends Component {
     // this.props.submitClicked(updatedTask, taskIndex);
   }
 
-  submitClicked = (submittedTask) => {
+  submitClicked = (submittedTask, index) => {
     if (submittedTask === null) {
       console.log('nothing changed confirmed');
       this.setState({
         editIndex: -1,
         // editing: false
-      });  
+      });
+    }
+    else {
+      console.log('change detected');
+      console.log(submittedTask, index);
 
+      let newTaskList = [...this.props.tasks];
+      newTaskList.splice(index, 1, submittedTask);
+      console.log(newTaskList);
+
+      // somehow send this data up to App.js
+      this.props.submitClicked(submittedTask, index);
+
+      this.setState({
+        editIndex: -1,
+        // editing: false
+      });
     }
   }
 
@@ -104,7 +120,6 @@ class Todolist extends Component {
       const todoList =
         tasks.map((task, index) => {
           if (index === this.state.editIndex) {
-            console.log('edit caught');
             return(
               <EditTodo
                 key='no'

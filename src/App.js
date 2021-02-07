@@ -114,10 +114,17 @@ class App extends Component {
     this.postData(allTasks);
   }*/
 
-  receiveEdit(task, taskIndex) {
+  receiveEdit(submittedTask, taskIndex) {
     // if index > length, push to end
     // replace whatever task index with this new one
-    console.log(task, taskIndex);
+    console.log(submittedTask, taskIndex);
+
+    let newTaskList = [...this.state.tasks];
+    newTaskList.splice(taskIndex, 1, submittedTask);
+    console.log(newTaskList);
+
+    this.postData(newTaskList);
+
   }
 
 
@@ -141,7 +148,7 @@ class App extends Component {
           netError={this.state.networkError}
           tasks={this.state.tasks}
           clicked={this.deleteData.bind(this)}
-          // submitClicked={this.receiveEdit.bind(this)}
+          submitClicked={this.receiveEdit.bind(this)}
           note={'editClicked={this.editData.bind(this)'}/>
         <br />
 
