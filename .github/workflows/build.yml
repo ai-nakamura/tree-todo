@@ -25,3 +25,6 @@ jobs:
 
       - name: Build
         run: npm run-script build
+
+      - name: Deploy
+        run: curl https://pdm.me/todo/deploy
