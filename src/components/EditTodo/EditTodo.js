@@ -37,10 +37,10 @@ const EditTodo = props => {
     ph_dueDate = props.task.dueDate;
   }
 
-  const onDropdown = href => {
+/*  const onDropdown = href => {
     console.log(href.substring(1));
     setDropdownTitle(href.substring(1));
-  };
+  };*/
 
   const dropdownHandler = eventKey => {
     console.log(eventKey);
