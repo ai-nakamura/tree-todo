@@ -8,20 +8,9 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 //   return <span className={classes.emoji}>{props.emoji}</span>;
 // }
 
+// look in to this video about fixing the dropdown menu
+// https://www.youtube.com/watch?v=AcOjmZrcxfM
 
-/*
-< EditTodo
-    nameRef=''
-    descriptionRef=''
-    dateRef=''
-    dropdownRef ='' />
-
-
- */
-
-
-
-// return a form in line with the table
 const EditTodo = props => {
 
   const nameRef = useRef();
@@ -39,7 +28,7 @@ const EditTodo = props => {
   let ph_dropDown = dropdownTitle;
   let ph_taskName = "task name";
   let ph_taskDescription = "task description";
-  let ph_dueDate = "due date";
+  let ph_dueDate = "";
 
   if (props.task) {
     ph_dropDown = props.task.tag;
@@ -53,10 +42,18 @@ const EditTodo = props => {
     setDropdownTitle(href.substring(1));
   };
 
+  const dropdownHandler = eventKey => {
+    console.log(eventKey);
+    setDropdownTitle(eventKey);
+    // how strange, the below will log the previous value instead of
+    // the new one, but it still works?
+    console.log(dropdownTitle);
+  }
 
   const onSubmit = event => {
 
-    let tag = dropdownRef.current.innerText;
+    // let tag = dropdownRef.current.innerText;
+    let tag = dropdownTitle;
     let taskName = nameRef.current.value;
     let taskDescription = descriptionRef.current.value;
     let dueDate = dateRef.current.value; // sometimes returns "today". Might become a problem
@@ -72,11 +69,20 @@ const EditTodo = props => {
       dueDate = ph_dueDate;
     }
 
-    if (!props.task && taskName === ph_taskName) {
-       alert("please choose a task name");
-       return;
+    // no props.task if it's a blank edit todo
+    if (!props.task){
+      if (taskName === ph_taskName) {
+        alert("please choose a task name");
+        return;
+      }
+      const updatedTask = {tag, taskName, taskDescription, dueDate};
+      console.log(updatedTask);
+
+      props.submitClicked(updatedTask, props.id);
+      return;
      }
 
+    console.log(props);
     if (
       tag === props.task.tag &&
       taskName === props.task.taskName &&
@@ -88,19 +94,9 @@ const EditTodo = props => {
       return;
     }
 
-    const updatedTask = {
-      tag: tag,
-      taskName: taskName,
-      taskDescription: taskDescription,
-      dueDate: dueDate
-    }
-
+    const updatedTask = {tag, taskName, taskDescription, dueDate};
     console.log(updatedTask);
-    // console.log("on submit: $" + tag + "$ ", taskName, taskDescription, typeof dueDate);
-    // Do something with the values. Submit the edit!
 
-
-    // props.editClicked(event, props.id, updatedTask);
     props.submitClicked(updatedTask, props.id);
   };
 
@@ -149,20 +145,23 @@ const EditTodo = props => {
           ref={dropdownRef}>
 
           <Dropdown.Item
-            href={'#' + chore}
-            onSelect={onDropdown}>
+            // href={'#' + chore}
+            onSelect={dropdownHandler}
+            eventKey={chore}>
             {chore}
           </Dropdown.Item>
 
           <Dropdown.Item
-            href={'#' + work}
-            onSelect={onDropdown}>
+            // href={'#' + work}
+            onSelect={dropdownHandler}
+            eventKey={work}>
             {work}
           </Dropdown.Item>
 
           <Dropdown.Item
-            href={'#' + selfCare}
-            onSelect={onDropdown}>
+            // href={'#' + selfCare}
+            onSelect={dropdownHandler}
+            eventKey={selfCare}>
             {selfCare}
           </Dropdown.Item>
 

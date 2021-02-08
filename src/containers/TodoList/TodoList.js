@@ -98,6 +98,8 @@ class Todolist extends Component {
       /*
        * Sort by date
        * eventually replace this with a toggle option
+       * [BUG] sorting at render doesn't change the original list,
+       * causes editing to bug out bc of indexing issue
        */
       tasks.sort((key1, key2) => {
         const one = key1.dueDate;
