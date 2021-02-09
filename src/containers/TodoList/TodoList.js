@@ -30,7 +30,7 @@ class Todolist extends Component {
     // this.props.submitClicked(updatedTask, taskIndex);
   }
 
-  submitClicked = (submittedTask, index) => {
+  submitClicked = (submittedTask, oldHashKey) => {
     if (submittedTask === null) {
       console.log('nothing changed confirmed');
       this.setState({
@@ -40,14 +40,30 @@ class Todolist extends Component {
     }
     else {
       console.log('change detected');
-      console.log(submittedTask, index);
+      console.log(submittedTask, oldHashKey);
 
+      // find the one with old hash
       let newTaskList = [...this.props.tasks];
-      newTaskList.splice(index, 1, submittedTask);
-      console.log(newTaskList);
+
+      let index;
+      for (index = 0; index < newTaskList.length; index++) {
+        if (newTaskList[index].hashKey === oldHashKey) {
+          newTaskList[index] = submittedTask;
+          console.log('oldhash found');
+          break;
+        }
+      }
+      // if we got to the end of the list, that means this is a new task
+      if (index === newTaskList.length) {
+        newTaskList.push(submittedTask);
+      }
+      // newTaskList.splice(index, 1, submittedTask);
+
+
+      console.log(newTaskList, index);
 
       // somehow send this data up to App.js
-      this.props.submitClicked(submittedTask, index);
+      this.props.submitClicked(newTaskList, index);
 
       this.setState({
         editIndex: -1,
@@ -84,8 +100,9 @@ class Todolist extends Component {
             <tbody>
               <EditTodo
                 key='no'
-                id='0'
+                index='0'
                 editClicked={editClicked}
+                hashGen={this.props.hashGen}
                 submitClicked={this.submitClicked}/>
             </tbody>
           </Table>
@@ -101,9 +118,9 @@ class Todolist extends Component {
        * [BUG] sorting at render doesn't change the original list,
        * causes editing to bug out bc of indexing issue
        */
-      tasks.sort((key1, key2) => {
-        const one = key1.dueDate;
-        const two = key2.dueDate;
+      tasks.sort((task1, task2) => {
+        const one = task1.dueDate;
+        const two = task2.dueDate;
         if (one === '') return 1;
         if (two === '') return -1;
         if (one === two) return 0;
@@ -125,9 +142,10 @@ class Todolist extends Component {
             return(
               <EditTodo
                 key='no'
-                id={index}
+                index={index}
                 task={task}
                 editClicked={this.editClicked}
+                hashGen={this.props.hashGen}
                 submitClicked={this.submitClicked}/>
             )
           }
@@ -168,8 +186,9 @@ class Todolist extends Component {
                 this.state.editing ?
                   <EditTodo
                     key='no'
-                    id={this.props.tasks.length}
+                    index={this.props.tasks.length}
                     editClicked={this.editClicked}
+                    hashGen={this.props.hashGen}
                     submitClicked={this.submitClicked}/>
                   : null
               }

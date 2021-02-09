@@ -18,7 +18,7 @@ class App extends Component {
   state = {
     networkError: false,
     tasks: [],
-    myTask: 'edit button now shows an edit field!',
+    myTask: 'hashKey added to fix sorting bug',
   }
 
   getData() {
@@ -48,6 +48,7 @@ class App extends Component {
 
   postData(data) {
     console.log('postData');
+
 
     let dataStr = JSON.stringify(data);
     if (dataStr === '[]') {
@@ -114,19 +115,34 @@ class App extends Component {
     this.postData(allTasks);
   }*/
 
-  receiveEdit(submittedTask, taskIndex) {
+  receiveEdit(submittedTasks, taskIndex) {
     // if index > length, push to end
     // replace whatever task index with this new one
-    console.log(submittedTask, taskIndex);
+    console.log(submittedTasks, taskIndex);
 
-    let newTaskList = [...this.state.tasks];
-    newTaskList.splice(taskIndex, 1, submittedTask);
-    console.log(newTaskList);
+    // let newTaskList = [...this.state.tasks];
+    // newTaskList.splice(taskIndex, 1, submittedTasks);
+    // console.log(newTaskList);
 
-    this.postData(newTaskList);
+
+    this.postData(submittedTasks);
 
   }
 
+  // from https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+  hashKeyGenerator(task) {
+    let hash = 0;
+    const str = '' +
+      task.tag + task.taskName + task.taskDescription + task.dueDate;
+
+    for (let i = 0; i < str.length; i++) {
+      const chr   = str.charCodeAt(i);
+      hash  = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+
+    return hash;
+  }
 
   render() {
     return (
@@ -149,6 +165,7 @@ class App extends Component {
           tasks={this.state.tasks}
           clicked={this.deleteData.bind(this)}
           submitClicked={this.receiveEdit.bind(this)}
+          hashGen={this.hashKeyGenerator}
           note={'editClicked={this.editData.bind(this)'}/>
         <br />
 

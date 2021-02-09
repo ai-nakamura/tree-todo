@@ -29,12 +29,14 @@ const EditTodo = props => {
   let ph_taskName = "task name";
   let ph_taskDescription = "task description";
   let ph_dueDate = "";
+  let taskHashKey = 0;
 
   if (props.task) {
     ph_dropDown = props.task.tag;
     ph_taskName = props.task.taskName;
     ph_taskDescription = props.task.taskDescription;
     ph_dueDate = props.task.dueDate;
+    taskHashKey = props.task.hashKey;
   }
 
 /*  const onDropdown = href => {
@@ -75,10 +77,12 @@ const EditTodo = props => {
         alert("please choose a task name");
         return;
       }
-      const updatedTask = {tag, taskName, taskDescription, dueDate};
-      console.log(updatedTask);
+      const hashKey = props.hashGen(tag, taskName, taskDescription, dueDate);
+      const updatedTask = {tag, taskName, taskDescription, dueDate, hashKey};
+      // console.log(updatedTask, taskHashKey);
 
-      props.submitClicked(updatedTask, props.id);
+
+      props.submitClicked(updatedTask, taskHashKey);
       return;
      }
 
@@ -94,10 +98,13 @@ const EditTodo = props => {
       return;
     }
 
-    const updatedTask = {tag, taskName, taskDescription, dueDate};
-    console.log(updatedTask);
+    const hashKey = props.hashGen(tag, taskName, taskDescription, dueDate);
+    const updatedTask = {tag, taskName, taskDescription, dueDate, hashKey};
+    console.log(props.task);
 
-    props.submitClicked(updatedTask, props.id);
+    console.log(updatedTask, taskHashKey);
+
+    props.submitClicked(updatedTask, props.task.hashKey);
   };
 
   /*  const dropdown = (
