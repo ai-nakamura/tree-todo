@@ -49,7 +49,7 @@ class Todolist extends Component {
       for (index = 0; index < newTaskList.length; index++) {
         if (newTaskList[index].hashKey === oldHashKey) {
           newTaskList[index] = submittedTask;
-          console.log('oldhash found');
+          console.log('old hash found');
           break;
         }
       }

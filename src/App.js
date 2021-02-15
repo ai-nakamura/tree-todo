@@ -18,7 +18,7 @@ class App extends Component {
   state = {
     networkError: false,
     tasks: [],
-    myTask: 'hashKey added to fix sorting bug',
+    myTask: 'todo: fix the tag not working!',
   }
 
   getData() {

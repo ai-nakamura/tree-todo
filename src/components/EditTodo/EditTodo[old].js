@@ -33,6 +33,7 @@ const EditTodo = props => {
 
   if (props.task) {
     ph_dropDown = props.task.tag;
+    // setDropdownTitle(props.task.tag);
     ph_taskName = props.task.taskName;
     ph_taskDescription = props.task.taskDescription;
     ph_dueDate = props.task.dueDate;
@@ -71,14 +72,16 @@ const EditTodo = props => {
       dueDate = ph_dueDate;
     }
 
-    // no props.task if it's a blank edit todo
+    // no props.task if it's a blank EditTodo
     if (!props.task){
       if (taskName === ph_taskName) {
         alert("please choose a task name");
         return;
       }
-      const hashKey = props.hashGen(tag, taskName, taskDescription, dueDate);
-      const updatedTask = {tag, taskName, taskDescription, dueDate, hashKey};
+      const hashKey =
+        props.hashGen(tag, taskName, taskDescription, dueDate);
+      const updatedTask =
+        {tag, taskName, taskDescription, dueDate, hashKey};
       // console.log(updatedTask, taskHashKey);
 
 
@@ -86,6 +89,7 @@ const EditTodo = props => {
       return;
      }
 
+    // else, we're editing an existing task
     console.log(props);
     if (
       tag === props.task.tag &&
@@ -98,50 +102,18 @@ const EditTodo = props => {
       return;
     }
 
-    const hashKey = props.hashGen(tag, taskName, taskDescription, dueDate);
-    const updatedTask = {tag, taskName, taskDescription, dueDate, hashKey};
+    const hashKey =
+      props.hashGen(tag, taskName, taskDescription, dueDate);
+    const updatedTask =
+      {tag, taskName, taskDescription, dueDate, hashKey};
+
     console.log(props.task);
 
-    console.log(updatedTask, taskHashKey);
-
-    props.submitClicked(updatedTask, props.task.hashKey);
+    const oldHash = taskHashKey;
+    console.log(updatedTask, oldHash);
+    props.submitClicked(updatedTask, oldHash);
   };
 
-  /*  const dropdown = (
-     <Dropdown>
-
-       <Dropdown.Toggle variant="success" id="dropdown-basic">
-         {this.state.formData.formDropdownSelection}
-       </Dropdown.Toggle>
-
-       <Dropdown.Menu>
-         <Dropdown.Item
-           onSelect={this.dropdownHandler}
-           eventKey="🧹 chore"
-           href="#/action-1">
-           <Emoji emoji="🧹"/>
-           chore
-         </Dropdown.Item>
-
-         <Dropdown.Item
-           onSelect={this.dropdownHandler}
-           eventKey="💼 work"
-           href="#/action-2">
-           <Emoji emoji="💼"/>
-           work
-         </Dropdown.Item>
-
-         <Dropdown.Item
-           onSelect={this.dropdownHandler}
-           eventKey="🌱 self care"
-           href="#/action-3">
-           <Emoji emoji="🌱"/>
-           self care
-         </Dropdown.Item>
-
-       </Dropdown.Menu>
-     </Dropdown>
-   );*/
 
   return(
     <tr>
