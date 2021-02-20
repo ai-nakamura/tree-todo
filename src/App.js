@@ -18,7 +18,7 @@ class App extends Component {
   state = {
     networkError: false,
     tasks: [],
-    myTask: 'todo: fix the tag not working!',
+    myTask: 'todo: reset new task fields to place holder',
   }
 
   getData() {
