@@ -11,8 +11,8 @@ class EditTodo extends Component {
     },
     task: {
       tag: '',
-      task: '',
-      description: '',
+      taskName: '',
+      taskDescription: '',
       dueDate: '',
       hashKey: 0
     },
@@ -34,8 +34,6 @@ class EditTodo extends Component {
   componentDidMount() {
     let task = {};
 
-    console.log(this.props);
-
     //false = creating a new task
     if (!this.props.task) {
       let defTask = {...this.state.default_task};
@@ -46,16 +44,19 @@ class EditTodo extends Component {
     // true = editing an existing task
     else {
       task = {
-        tag: this.props.task.tag,
-        task: this.props.task.taskName,
-        description: this.props.task.taskDescription,
-        dueDate: this.props.task.dueDate,
-        hashKey: this.props.task.hashKey
+        tag:             this.props.task.tag,
+        taskName:        this.props.task.taskName,
+        taskDescription: this.props.task.taskDescription,
+        dueDate:         this.props.task.dueDate,
+        hashKey:         this.props.task.hashKey
       }
+      const refs = { ...this.state.ref };
+      refs.taskRef.current.value        = this.props.task.taskName
+      refs.descriptionRef.current.value = this.props.task.taskDescription
+      refs.dateRef.current.value        = this.props.task.dueDate
     }
 
-    console.log(task);
-    this.setState({task: task});
+    this.setState({ task: task });
   }
 
   dropdownHandler = event => {
@@ -75,7 +76,7 @@ class EditTodo extends Component {
     const {ref} = this.state;
     const oldTask = this.props.task;
 
-    const updatedTask = {
+    const currTask = {
       tag:              ref.tagRef.current.innerText,
       taskName:         ref.taskRef.current.value,
       taskDescription:  ref.descriptionRef.current.value,
@@ -85,16 +86,17 @@ class EditTodo extends Component {
     // if this is a new task
     if (!oldTask){
       // check that there's a name at least
-      if (updatedTask.task === '') {
+      console.log('submitting new task');
+      if (currTask.task === '') {
         alert("please choose a task name");
         return;
       }
       // submit new task
-      const updatedHashKey = this.props.hashGen(updatedTask);
+      const updatedHashKey = this.props.hashGen(currTask);
       const oldHashKey = 0;
-      updatedTask.hashKey = updatedHashKey;
+      currTask.hashKey = updatedHashKey;
 
-      this.props.submitClicked(updatedTask, oldHashKey);
+      this.props.submitClicked(currTask, oldHashKey);
 
       // reset fields
       ref.taskRef.current.value = '';
@@ -108,8 +110,48 @@ class EditTodo extends Component {
 
       this.setState({ task: defTask });
     }
+
+    // else this is an existing task
     else {
 
+      console.log('submitting existing task');
+      const oldTask = {...this.props.task};
+      const newTask = {
+        tag:             ref.tagRef.current.innerText,
+        taskName:        ref.taskRef.current.value,
+        taskDescription: ref.descriptionRef.current.value,
+        dueDate:         ref.dateRef.current.value,
+      }
+
+      // no change detected
+      if (
+        newTask.tag             === oldTask.tag &&
+        newTask.taskName        === oldTask.taskName &&
+        newTask.taskDescription === oldTask.taskDescription &&
+        newTask.dueDate         === oldTask.dueDate
+      ) {
+        console.log('nothing changed');
+        this.props.submitClicked(null);
+        return;
+      }
+
+      // else, something changed
+      else {
+
+        const oldHashKey = this.props.task.hashKey;
+        const newHashKey = (
+          this.props.hashGen(
+            newTask.tag,
+            newTask.taskName,
+            newTask.taskDescription,
+            newTask.dueDate
+          )
+        );
+        newTask.hashKey = newHashKey;
+
+        this.props.submitClicked(newTask, oldHashKey);
+
+      }
     }
 
 
@@ -155,13 +197,13 @@ class EditTodo extends Component {
         <td>
           <input
             type="text"
-            placeholder={task.task}
+            placeholder={task.taskName}
             ref={ref.taskRef}/>
         </td>
         <td>
           <input
             type="text"
-            placeholder={task.description}
+            placeholder={task.taskDescription}
             ref={ref.descriptionRef}/>
         </td>
         <td>

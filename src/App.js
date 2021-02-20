@@ -18,7 +18,7 @@ class App extends Component {
   state = {
     networkError: false,
     tasks: [],
-    myTask: 'todo: reset new task fields to place holder',
+    myTask: 'edit existing task works!',
   }
 
   getData() {
@@ -118,7 +118,6 @@ class App extends Component {
   receiveEdit(submittedTasks, taskIndex) {
     // if index > length, push to end
     // replace whatever task index with this new one
-    console.log(submittedTasks, taskIndex);
 
     // let newTaskList = [...this.state.tasks];
     // newTaskList.splice(taskIndex, 1, submittedTasks);

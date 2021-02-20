@@ -57,10 +57,6 @@ class Todolist extends Component {
       if (index === newTaskList.length) {
         newTaskList.push(submittedTask);
       }
-      // newTaskList.splice(index, 1, submittedTask);
-
-
-      console.log(newTaskList, index);
 
       // somehow send this data up to App.js
       this.props.submitClicked(newTaskList, index);
