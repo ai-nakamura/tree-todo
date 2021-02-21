@@ -18,8 +18,8 @@ class EditTodo extends Component {
     },
     default_task: {
       tag: '',
-      task: 'task name',
-      description: 'task description',
+      taskName: 'task name',
+      taskDescription: 'task description',
       dueDate: '',
       hashKey: 0
     },
@@ -36,7 +36,7 @@ class EditTodo extends Component {
 
     //false = creating a new task
     if (!this.props.task) {
-      let defTask = {...this.state.default_task};
+      let defTask = { ...this.state.default_task };
       defTask.tag = this.state.tags.selfCare;
       task = defTask;
     }
@@ -50,10 +50,11 @@ class EditTodo extends Component {
         dueDate:         this.props.task.dueDate,
         hashKey:         this.props.task.hashKey
       }
+
       const refs = { ...this.state.ref };
-      refs.taskRef.current.value        = this.props.task.taskName
-      refs.descriptionRef.current.value = this.props.task.taskDescription
-      refs.dateRef.current.value        = this.props.task.dueDate
+      refs.taskRef.current.value        = this.props.task.taskName;
+      refs.descriptionRef.current.value = this.props.task.taskDescription;
+      refs.dateRef.current.value        = this.props.task.dueDate;
     }
 
     this.setState({ task: task });
@@ -89,6 +90,14 @@ class EditTodo extends Component {
       console.log('submitting new task');
       if (currTask.task === '') {
         alert("please choose a task name");
+        return;
+      }
+      else if (
+        currTask.taskName         === '' &&
+        currTask.taskDescription  === '' &&
+        currTask.dueDate          === ''
+      )  {
+        this.props.submitClicked('empty new task');
         return;
       }
       // submit new task
@@ -159,7 +168,6 @@ class EditTodo extends Component {
 
 
   render () {
-
     const { task, tags, ref } = this.state;
 
     return (

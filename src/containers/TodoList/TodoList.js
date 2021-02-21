@@ -31,13 +31,23 @@ class Todolist extends Component {
   }
 
   submitClicked = (submittedTask, oldHashKey) => {
+    // console.trace('[submitClicked] TodoList.js');
     if (submittedTask === null) {
       console.log('nothing changed confirmed');
       this.setState({
         editIndex: -1,
-        // editing: false
+        editing: false
       });
     }
+
+    else if (submittedTask === 'empty new task') {
+      console.log(submittedTask);
+      this.setState({
+        editIndex: -1,
+        editing: false
+      });
+    }
+
     else {
       console.log('change detected');
       console.log(submittedTask, oldHashKey);
