@@ -18,7 +18,7 @@ class App extends Component {
   state = {
     networkError: false,
     tasks: [],
-    myTask: 'edit existing task works!',
+    myTask: 'Only one edit field at once now!',
   }
 
   getData() {

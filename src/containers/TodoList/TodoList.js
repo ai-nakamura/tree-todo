@@ -10,7 +10,8 @@ class Todolist extends Component {
 
   state = {
     editIndex: -1,
-    editing: false
+    editingExistingTask: false,
+    makingNewTask: false
   }
 
 
@@ -20,12 +21,11 @@ class Todolist extends Component {
     event.stopPropagation();
     console.log('[TodoList] editClicked');
     console.log('row to edit: ' + taskIndex);
-    // console.log(taskIndex);
-    // console.log(updatedTask);
 
     this.setState({
       editIndex: taskIndex,
-      // editing: true
+      editingExistingTask: true,
+      makingNewTask: false
     });
     // this.props.submitClicked(updatedTask, taskIndex);
   }
@@ -36,7 +36,8 @@ class Todolist extends Component {
       console.log('nothing changed confirmed');
       this.setState({
         editIndex: -1,
-        editing: false
+        editing: false,
+        makingNewTask: false
       });
     }
 
@@ -44,7 +45,7 @@ class Todolist extends Component {
       console.log(submittedTask);
       this.setState({
         editIndex: -1,
-        editing: false
+        makingNewTask: false
       });
     }
 
@@ -73,9 +74,17 @@ class Todolist extends Component {
 
       this.setState({
         editIndex: -1,
-        // editing: false
+        // makingNewTask: false
       });
     }
+  }
+
+  newTaskClicked = () => {
+    this.setState({
+      editIndex: -1,
+      editingExistingTask: false,
+      makingNewTask: !this.state.makingNewTask
+    });
   }
 
 
@@ -189,7 +198,7 @@ class Todolist extends Component {
             <tbody>
               {todoList}
               {
-                this.state.editing ?
+                this.state.makingNewTask ?
                   <EditTodo
                     key='no'
                     index={this.props.tasks.length}
@@ -201,9 +210,7 @@ class Todolist extends Component {
             </tbody>
           </Table>
           <button
-            onClick={ () => {
-              this.setState({ editing: !this.state.editing })
-            }}>
+            onClick={this.newTaskClicked}>
             new task
           </button>
         </>
