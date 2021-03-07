@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+// import { connect } from 'react-redux';
 
 class EditTodo extends Component {
   state ={
@@ -24,10 +25,10 @@ class EditTodo extends Component {
       hashKey: 0
     },
     ref: {
-      tagRef: createRef(),
-      taskRef: createRef(),
+      tagRef:         createRef(),
+      taskRef:        createRef(),
       descriptionRef: createRef(),
-      dateRef: createRef()
+      dateRef:        createRef()
     }
   }
 
@@ -86,12 +87,15 @@ class EditTodo extends Component {
 
     // if this is a new task
     if (!oldTask){
+
       // check that there's a name at least
       console.log('submitting new task');
       if (currTask.task === '') {
         alert("please choose a task name");
         return;
       }
+
+      // check if fields were left blank
       else if (
         currTask.taskName         === '' &&
         currTask.taskDescription  === '' &&
@@ -100,6 +104,7 @@ class EditTodo extends Component {
         this.props.submitClicked('empty new task');
         return;
       }
+
       // submit new task
       const updatedHashKey = this.props.hashGen(currTask);
       const oldHashKey = 0;
@@ -118,6 +123,7 @@ class EditTodo extends Component {
       };
 
       this.setState({ task: defTask });
+      console.log(this.props);
     }
 
     // else this is an existing task
@@ -231,4 +237,21 @@ class EditTodo extends Component {
   }
 }
 
+/*
+
+// store
+export const mapStateToProps = state => {
+  return {
+    tasks: state.tasks
+  };
+};
+
+// dispatch
+export const mapDispatchToProps = dispatch => {
+  return {
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditTodo);
+*/
 export default EditTodo;

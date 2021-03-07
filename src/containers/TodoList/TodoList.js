@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import Table from 'react-bootstrap/Table'
 
 import classes from './TodoList.module.css';
@@ -11,9 +12,15 @@ class Todolist extends Component {
   state = {
     editIndex: -1,
     editingExistingTask: false,
-    makingNewTask: false
+    makingNewTask: false,
+    sortedBy: 'tag'
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.sortedBy !== this.state.sortedBy) {
+      console.log('sortedBy is different');
+    }
+  }
 
   // wait, shouldn't this be Todo's responsibility?
   editClicked = (event, taskIndex, updatedTask) => {
@@ -87,6 +94,36 @@ class Todolist extends Component {
     });
   }
 
+  sortClicked = (tasks, sortType) => {
+    console.log(sortType);
+
+    // sort by tag alphabetically (ignore emoji)
+    if (sortType === 'tag') {
+      tasks.sort((task1, task2) => {
+        const one = task1.tag.charAt(3);
+        const two = task2.tag.charAt(3);
+        if (one === two) return 0;
+        return one < two ? -1 : 1;
+      });
+    }
+
+    // sort by task name
+
+    // sort by due date
+    if (sortType === 'dueDate') {
+      tasks.sort((task1, task2) => {
+        const one = task1.dueDate;
+        const two = task2.dueDate;
+        if (one === '' || two === 'today') return 1;
+        if (two === '' || one === 'today') return -1;
+        if (one === two) return 0;
+        return one < two ? -1 : 1;
+      });
+    }
+    console.log(tasks);
+    this.setState({tasks: tasks});
+  }
+
 
   // render runs twice: once when the component is mounted,
   // and a second time when the http call finishes and App.js re-renders
@@ -115,7 +152,9 @@ class Todolist extends Component {
             <tbody>
               <EditTodo
                 key='no'
+                task={null}
                 index='0'
+                clicked={null}
                 editClicked={editClicked}
                 hashGen={this.props.hashGen}
                 submitClicked={this.submitClicked}/>
@@ -130,24 +169,26 @@ class Todolist extends Component {
       /*
        * Sort by date
        * eventually replace this with a toggle option
-       * [BUG] sorting at render doesn't change the original list,
-       * causes editing to bug out bc of indexing issue
+       * [BUG] today is pushed to end of list and not top
        */
-      tasks.sort((task1, task2) => {
-        const one = task1.dueDate;
-        const two = task2.dueDate;
+/*      tasks.sort((task1, task2) => {
+        const one = task1[this.state.sortedBy];
+        const two = task2[this.state.sortedBy];
         if (one === '') return 1;
         if (two === '') return -1;
         if (one === two) return 0;
         return one < two ? -1 : 1;
-      });
+      });*/
+
+
 
       const header =
         <tr>
-          <th>tag</th>
-          <th>task name</th>
+          <th onClick={() => this.sortClicked(tasks, 'tag')}>tag</th>
+          <th onClick={() => this.sortClicked(tasks, 'task')}>task name</th>
           <th>description</th>
-          <th>due</th>
+          {/*<th onClick={() => this.sortClicked(tasks, 'dueDate')}>due</th>*/}
+          <th onClick={this.props.onDateSort}>due</th>
           <th>edit</th>
         </tr>;
 
@@ -157,8 +198,9 @@ class Todolist extends Component {
             return(
               <EditTodo
                 key='no'
-                index={index}
                 task={task}
+                index={index}
+                clicked={null}
                 editClicked={this.editClicked}
                 hashGen={this.props.hashGen}
                 submitClicked={this.submitClicked}/>
@@ -166,26 +208,16 @@ class Todolist extends Component {
           }
           return (
             <Todo
-              task={task}
               key={index}
+              task={task}
               index={index}
               clicked={this.props.clicked}
-              editClicked={this.editClicked}/>
+              editClicked={this.editClicked}
+              hashGen={null}
+              submitClicked={null}/>
           );
         });
 
-
-
-    /*  const taskData = tasks.map((task, index) =>
-        <Todo
-          task={task}
-          key={index}
-          index={index}
-          clicked={clicked}
-          editClicked={this.editClicked}/>
-      );*/
-
-      // TODO: Use editIndex to determine where to have EditTodo...
 
       return (
         <>
@@ -201,7 +233,9 @@ class Todolist extends Component {
                 this.state.makingNewTask ?
                   <EditTodo
                     key='no'
+                    task={null}
                     index={this.props.tasks.length}
+                    clicked={null}
                     editClicked={this.editClicked}
                     hashGen={this.props.hashGen}
                     submitClicked={this.submitClicked}/>
@@ -223,4 +257,18 @@ class Todolist extends Component {
 
 }
 
-export default Todolist;
+// store
+export const mapStateToProps = state => {
+  return {
+    tasks: state.tasks
+  };
+};
+
+// dispatch
+export const mapDispatchToProps = dispatch => {
+  return {
+    onDateSort: () => dispatch({ type: 'dueDate '})
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Todolist);

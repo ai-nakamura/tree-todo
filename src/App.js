@@ -1,34 +1,40 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
+import {connect} from 'react-redux';
 
 import * as sap from './sap';
 import data from './tasks';
+import fnv1a from './FNV-1a';
 // import PostTask from './PostTasks/PostTask';
 import TodoList from './containers/TodoList/TodoList';
+
+
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import sprout from './asset/images/sprout.png';
 
 class App extends Component {
-  componentDidMount() {
-    this.getData();
+  state = {
+    // networkError: false,
+    // tasks:  [],
+    myTask: 'curr task: fix adding new task ' +
+      '(It only shows up after refresh)',
   }
 
-  state = {
-    networkError: false,
-    tasks: [],
-    myTask: 'Only one edit field at once now!',
+  componentDidMount() {
+    this.getData();
   }
 
   getData() {
 
     sap.get((responseText) => {
+
       if (responseText === null) {
         console.log('trouble with GET request');
-        this.setState({
-          networkError: true
-        });
+
+        // DISPATCH
+        this.props.onNetErr(true);
         return;
       }
 
@@ -37,11 +43,9 @@ class App extends Component {
         tasks = JSON.parse(responseText);
       }
 
-      // update the state of the component with the result here
-      this.setState({
-        networkError: false,  // reset the error flag if it was set
-        tasks: tasks
-      });
+      // DISPATCH
+      this.props.onInit(tasks);
+      this.props.onNetErr(false);
     });
 
   }
@@ -65,20 +69,34 @@ class App extends Component {
         });
       }
     });
+    this.setState({});
   }
 
-  deleteData(taskIndex) {
+  addData(newTask) {
+
+    console.log("addData");
+    console.log("task to add: " + newTask);
+
+    this.props.onAddTask(newTask);
+    this.postData(this.props.tasks);
+
+  }
+
+  deleteData(hashKey) {
 
     console.log("deleteData");
-    console.log("row to delete: " + taskIndex);
+    console.log("task to delete: " + hashKey);
 
-    const toPost = [...this.state.tasks];
-    console.log(toPost);
+    // const toPost = [...this.props.tasks];
+    // console.log(toPost);
 
-    const deleted = toPost.splice(taskIndex, 1);
-    console.log(deleted);
+    // const deleted = toPost.splice(taskIndex, 1);
+    // console.log(deleted);
 
-    this.postData(toPost);
+
+    this.props.onDeleteTask(hashKey);
+
+    this.postData(this.props.tasks);
 
   }
 
@@ -130,17 +148,10 @@ class App extends Component {
 
   // from https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
   hashKeyGenerator(task) {
-    let hash = 0;
     const str = '' +
       task.tag + task.taskName + task.taskDescription + task.dueDate;
 
-    for (let i = 0; i < str.length; i++) {
-      const chr   = str.charCodeAt(i);
-      hash  = ((hash << 5) - hash) + chr;
-      hash |= 0; // Convert to 32bit integer
-    }
-
-    return hash;
+    return fnv1a(str);
   }
 
   render() {
@@ -161,7 +172,7 @@ class App extends Component {
 
         <TodoList
           netError={this.state.networkError}
-          tasks={this.state.tasks}
+          tasks={'test'}
           clicked={this.deleteData.bind(this)}
           submitClicked={this.receiveEdit.bind(this)}
           hashGen={this.hashKeyGenerator}
@@ -177,7 +188,25 @@ class App extends Component {
       </div>
     );
   }
-
 }
 
-export default App;
+// store
+export const mapStateToProps = state => {
+  return {
+    tasks: state.tasks,
+    netErr: state.networkError
+  };
+};
+
+// dispatch
+export const mapDispatchToProps = dispatch => {
+  return {
+    onNetErr: (netErr) =>    dispatch({ type: 'NET_ERR', netErr}),
+    onInit: (fetchedData) => dispatch({ type: 'INIT' , fetchedData}),
+
+    onAddTask: () => dispatch({ type: 'ADD_TASK' }),
+    onDeleteTask: (hashKey) => dispatch({ type: 'DELETE_TASK', hashKey })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

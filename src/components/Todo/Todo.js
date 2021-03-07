@@ -7,7 +7,6 @@ const todo = props => {
 
   const editButton =
     <td
-      // onClick={() => console.log('etodoo')}
       onClick={event => props.editClicked(event, i)}
       style={{cursor: "pointer"}}>
       <button>✏️</button>
@@ -16,7 +15,8 @@ const todo = props => {
 
   return (
     <tr
-      onClick={() => props.clicked(i)}>
+      // onClick={() => props.clicked(i)}>
+      onClick={() => props.clicked(todo.hashKey)}>
       <td>{todo.tag}</td>
       <td>{todo.taskName}</td>
       <td>{todo.taskDescription}</td>
