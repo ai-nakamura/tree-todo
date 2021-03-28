@@ -76,12 +76,12 @@ class Todolist extends Component {
         newTaskList.push(submittedTask);
       }
 
-      // somehow send this data up to App.js
+      // Send it up to App.js to post to db
       this.props.submitClicked(newTaskList, index);
+
 
       this.setState({
         editIndex: -1,
-        // makingNewTask: false
       });
     }
   }
@@ -267,7 +267,8 @@ export const mapStateToProps = state => {
 // dispatch
 export const mapDispatchToProps = dispatch => {
   return {
-    onDateSort: () => dispatch({ type: 'dueDate '})
+    onDateSort:    () => dispatch({ type: 'dueDate '}),
+    onSetTask: (task) => dispatch({ type: 'ADD_TASK', task })
   }
 }
 

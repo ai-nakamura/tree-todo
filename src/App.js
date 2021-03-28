@@ -18,8 +18,7 @@ class App extends Component {
   state = {
     // networkError: false,
     // tasks:  [],
-    myTask: 'curr task: fix adding new task ' +
-      '(It only shows up after refresh)',
+    myTask: 'curr task: add log-in'
   }
 
   componentDidMount() {
@@ -64,22 +63,9 @@ class App extends Component {
       }
       if (responseText === '') {
         console.log('POST worked!');
-        this.setState({
-          tasks: data
-        });
+
       }
     });
-    this.setState({});
-  }
-
-  addData(newTask) {
-
-    console.log("addData");
-    console.log("task to add: " + newTask);
-
-    this.props.onAddTask(newTask);
-    this.postData(this.props.tasks);
-
   }
 
   deleteData(hashKey) {
@@ -133,16 +119,10 @@ class App extends Component {
     this.postData(allTasks);
   }*/
 
-  receiveEdit(submittedTasks, taskIndex) {
-    // if index > length, push to end
-    // replace whatever task index with this new one
-
-    // let newTaskList = [...this.state.tasks];
-    // newTaskList.splice(taskIndex, 1, submittedTasks);
-    // console.log(newTaskList);
-
-
-    this.postData(submittedTasks);
+  receiveEdit(submittedNewTasks, taskIndex) {
+    console.log('receivedEdit');
+    this.props.onSetTask(submittedNewTasks, taskIndex);
+    this.postData(submittedNewTasks);
 
   }
 
@@ -181,7 +161,7 @@ class App extends Component {
 
         <Button
           variant="outline-primary"
-          onClick={ () => this.postData(data) }>
+          onClick={ () => this.receiveEdit(data, 2) }>
           test data
         </Button>
 
@@ -204,8 +184,8 @@ export const mapDispatchToProps = dispatch => {
     onNetErr: (netErr) =>    dispatch({ type: 'NET_ERR', netErr}),
     onInit: (fetchedData) => dispatch({ type: 'INIT' , fetchedData}),
 
-    onAddTask: () => dispatch({ type: 'ADD_TASK' }),
-    onDeleteTask: (hashKey) => dispatch({ type: 'DELETE_TASK', hashKey })
+    onSetTask: (newTaskList, index) => dispatch({ type: 'SET_TASK_LIST', newTaskList, index }),
+    onDeleteTask:  (hashKey) => dispatch({ type: 'DELETE_TASK', hashKey })
   }
 }
 

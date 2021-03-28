@@ -38,15 +38,26 @@ function reducer (state = initialState, action) {
         networkError: action.netErr
       };
 
-    case 'ADD_TASK':
-      return state;
+    case 'SET_TASK_LIST':
+      console.log('[reducer] SET_TASK_LIST: ');
+      // console.log(action.newTaskList, action.index);
+
+      // new task
+      if (action.index >= state.tasks.length) {
+        console.log('new task received');
+      }
+
+      return {
+        ...state,
+        tasks: action.newTaskList
+      };
 
     case 'DELETE_TASK':
       const newTasks = state
         .tasks.filter( task =>
         task.hashKey !== action.hashKey
       )
-      // console.log(newTasks);
+      console.log(newTasks);
       return {
         ...state,
         tasks: newTasks

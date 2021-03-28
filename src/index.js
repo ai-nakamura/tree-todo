@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 // we'll need { combineReducers } (section 15 of lec)
 // when we want to add 'tags' as a state eventually
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './App';
@@ -24,7 +25,10 @@ const logger = store => {
     }
   }
 }
-const store = createStore(reducer, applyMiddleware(logger));
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(reducer, composeEnhancers(applyMiddleware(logger, thunk)));
 
 
 ReactDOM.render(
