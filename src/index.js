@@ -9,6 +9,7 @@ import thunk from 'redux-thunk';
 import './index.css';
 import App from './App';
 import reducer from './store/reducer';
+import { BrowserRouter } from 'react-router-dom';
 
 // import reportWebVitals from './reportWebVitals';
 
@@ -34,7 +35,9 @@ const store = createStore(reducer, composeEnhancers(applyMiddleware(logger, thun
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </React.StrictMode>
   </Provider>,
   document.getElementById('root')
