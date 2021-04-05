@@ -19,7 +19,7 @@ class Main extends Component {
   state = {
     // networkError: false,
     // tasks:  [],
-    myTask: 'curr task: add log-in'
+    myTask: 'curr task: redirect user to main page'
   }
 
   componentDidMount() {
@@ -147,7 +147,7 @@ class Main extends Component {
 
         {not_logged_in}
         <h1>Tree</h1>
-        <p>the start of a lovely journey</p>
+         <p>the start of a lovely journey</p>
         <img src={sprout} className="Sprout" alt={"Logo, a little sprout"} />
         <br /><br />
 
