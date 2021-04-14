@@ -86,7 +86,6 @@ function reducer (state = initialState, action) {
       localStorage.setItem('email', action.email);
       localStorage.setItem('password', action.password);
       localStorage.setItem('token', 'token');
-      console.log('[AUTH_ADD_TOKEN: ' + action.email + action.password)
       return {
         ...state,
         token: 'token'
