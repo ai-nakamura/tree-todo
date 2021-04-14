@@ -138,7 +138,7 @@ class Main extends Component {
   render() {
 
     let not_logged_in = null;
-    if (!this.props.token) {
+    if (!localStorage.getItem('token')) {
       not_logged_in = <Redirect to='/login' component={Auth}/>;
     }
 
