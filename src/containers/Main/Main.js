@@ -138,6 +138,7 @@ class Main extends Component {
   render() {
 
     let not_logged_in = null;
+    // consider accessing localstorage only once during componentDidMount
     if (!localStorage.getItem('token')) {
       not_logged_in = <Redirect to='/login' component={Auth}/>;
     }
