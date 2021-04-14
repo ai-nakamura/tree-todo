@@ -90,7 +90,7 @@ class EditTodo extends Component {
 
       // check that there's a name at least
       console.log('submitting new task');
-      if (currTask.task === '') {
+      if (currTask.taskName === '') {
         alert("please choose a task name");
         return;
       }

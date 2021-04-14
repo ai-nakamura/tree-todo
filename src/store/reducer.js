@@ -15,6 +15,7 @@ function reducer (state = initialState, action) {
         tasks: action.fetchedData
       };
 
+
     // database access
     // networkError: true or false
     case 'NET_ERR':
@@ -65,7 +66,7 @@ function reducer (state = initialState, action) {
       console.log(action.type);
       return;
 
-
+    /*
     // mutating...
     // add a task
     case 'addTask':
@@ -76,12 +77,23 @@ function reducer (state = initialState, action) {
     case 'deleteTask':
       console.log('deleteTask');
       return;
+    */
+
+
+    // auth...
+    // TODO: replace with real token storage
+    case 'AUTH_ADD_TOKEN':
+      localStorage.setItem('email', action.email);
+      localStorage.setItem('password', action.password);
+      localStorage.setItem('token', 'token');
+      return {
+        ...state,
+        token: 'token'
+      }
 
     default:
       console.log(action);
       return state;
-
-
   }
 
   // return state;

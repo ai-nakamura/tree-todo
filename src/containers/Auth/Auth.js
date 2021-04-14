@@ -16,14 +16,18 @@ class Auth extends Component {
     this.setState({[event.target.type]: event.target.value});
   }
 
+  // TODO: verify authentication. Right now it just redirects
   onClickHandler = () => {
-    console.log(this.state.email, this.state.password);
-
     // verify that this is a proper user
 
     // save data to local storage for auto sign-in
 
+    // save token to local storage
+    // saving to redux state for now
+    this.props.onAddToken(this.state.email, this.state.password);
+
     // redirect user to main app page
+    this.props.history.push('/');
   }
 
 
@@ -34,7 +38,7 @@ class Auth extends Component {
         <div className='row'>
           <div className='col-sm-8 offset-sm-2 col-md-6 offset-md-3'>
 
-            <form onSubmit={()=>console.log('submitted')}>
+            <form>
               <p className="h5 text-center mb-4">Sign in</p>
 
               {/*email form*/}
@@ -102,7 +106,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-
+    onAddToken: (email, password) => dispatch({ type: 'AUTH_ADD_TOKEN', email, password })
   };
 };
 
