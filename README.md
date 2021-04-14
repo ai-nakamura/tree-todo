@@ -1,1 +1,1 @@
-React app for https://github.com/pmer/gowiki
+React frontend for the [Tree-Todo app](https://github.com/tree-todo).
