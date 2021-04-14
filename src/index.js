@@ -1,13 +1,45 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore, compose, applyMiddleware } from 'redux';
+// we'll need { combineReducers } (section 15 of lec)
+// when we want to add 'tags' as a state eventually
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+
 import './index.css';
 import App from './App';
+import reducer from './store/reducer';
+import { BrowserRouter } from 'react-router-dom';
+
 // import reportWebVitals from './reportWebVitals';
 
+// middleware
+const logger = store => {
+
+  return next => {
+    return action => {
+      // console.trace('[middleware]');
+      console.log('[Middleware] Dispatching', action);
+      const result = next(action);
+      console.log('[Middleware] next state', store.getState());
+      return result;
+    }
+  }
+}
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(reducer, composeEnhancers(applyMiddleware(logger, thunk)));
+
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 

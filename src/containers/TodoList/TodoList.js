@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import Table from 'react-bootstrap/Table'
 
 import classes from './TodoList.module.css';
@@ -10,9 +11,16 @@ class Todolist extends Component {
 
   state = {
     editIndex: -1,
-    editing: false
+    editingExistingTask: false,
+    makingNewTask: false,
+    sortedBy: 'tag'
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.sortedBy !== this.state.sortedBy) {
+      console.log('sortedBy is different');
+    }
+  }
 
   // wait, shouldn't this be Todo's responsibility?
   editClicked = (event, taskIndex, updatedTask) => {
@@ -20,40 +28,100 @@ class Todolist extends Component {
     event.stopPropagation();
     console.log('[TodoList] editClicked');
     console.log('row to edit: ' + taskIndex);
-    // console.log(taskIndex);
-    // console.log(updatedTask);
 
     this.setState({
       editIndex: taskIndex,
-      // editing: true
+      editingExistingTask: true,
+      makingNewTask: false
     });
     // this.props.submitClicked(updatedTask, taskIndex);
   }
 
-  submitClicked = (submittedTask, index) => {
+  submitClicked = (submittedTask, oldHashKey) => {
+    // console.trace('[submitClicked] TodoList.js');
     if (submittedTask === null) {
       console.log('nothing changed confirmed');
       this.setState({
         editIndex: -1,
-        // editing: false
+        editing: false,
+        makingNewTask: false
       });
     }
+
+    else if (submittedTask === 'empty new task') {
+      console.log(submittedTask);
+      this.setState({
+        editIndex: -1,
+        makingNewTask: false
+      });
+    }
+
     else {
       console.log('change detected');
-      console.log(submittedTask, index);
+      console.log(submittedTask, oldHashKey);
 
+      // find the one with old hash
       let newTaskList = [...this.props.tasks];
-      newTaskList.splice(index, 1, submittedTask);
-      console.log(newTaskList);
 
-      // somehow send this data up to App.js
-      this.props.submitClicked(submittedTask, index);
+      let index;
+      for (index = 0; index < newTaskList.length; index++) {
+        if (newTaskList[index].hashKey === oldHashKey) {
+          newTaskList[index] = submittedTask;
+          console.log('old hash found');
+          break;
+        }
+      }
+      // if we got to the end of the list, that means this is a new task
+      if (index === newTaskList.length) {
+        newTaskList.push(submittedTask);
+      }
+
+      // Send it up to App.js to post to db
+      this.props.submitClicked(newTaskList, index);
+
 
       this.setState({
         editIndex: -1,
-        // editing: false
       });
     }
+  }
+
+  newTaskClicked = () => {
+    this.setState({
+      editIndex: -1,
+      editingExistingTask: false,
+      makingNewTask: !this.state.makingNewTask
+    });
+  }
+
+  sortClicked = (tasks, sortType) => {
+    console.log(sortType);
+
+    // sort by tag alphabetically (ignore emoji)
+    if (sortType === 'tag') {
+      tasks.sort((task1, task2) => {
+        const one = task1.tag.charAt(3);
+        const two = task2.tag.charAt(3);
+        if (one === two) return 0;
+        return one < two ? -1 : 1;
+      });
+    }
+
+    // sort by task name
+
+    // sort by due date
+    if (sortType === 'dueDate') {
+      tasks.sort((task1, task2) => {
+        const one = task1.dueDate;
+        const two = task2.dueDate;
+        if (one === '' || two === 'today') return 1;
+        if (two === '' || one === 'today') return -1;
+        if (one === two) return 0;
+        return one < two ? -1 : 1;
+      });
+    }
+    console.log(tasks);
+    this.setState({tasks: tasks});
   }
 
 
@@ -84,8 +152,11 @@ class Todolist extends Component {
             <tbody>
               <EditTodo
                 key='no'
-                id='0'
+                task={null}
+                index='0'
+                clicked={null}
                 editClicked={editClicked}
+                hashGen={this.props.hashGen}
                 submitClicked={this.submitClicked}/>
             </tbody>
           </Table>
@@ -98,22 +169,26 @@ class Todolist extends Component {
       /*
        * Sort by date
        * eventually replace this with a toggle option
+       * [BUG] today is pushed to end of list and not top
        */
-      tasks.sort((key1, key2) => {
-        const one = key1.dueDate;
-        const two = key2.dueDate;
+/*      tasks.sort((task1, task2) => {
+        const one = task1[this.state.sortedBy];
+        const two = task2[this.state.sortedBy];
         if (one === '') return 1;
         if (two === '') return -1;
         if (one === two) return 0;
         return one < two ? -1 : 1;
-      });
+      });*/
+
+
 
       const header =
         <tr>
-          <th>tag</th>
-          <th>task name</th>
+          <th onClick={() => this.sortClicked(tasks, 'tag')}>tag</th>
+          <th onClick={() => this.sortClicked(tasks, 'task')}>task name</th>
           <th>description</th>
-          <th>due</th>
+          {/*<th onClick={() => this.sortClicked(tasks, 'dueDate')}>due</th>*/}
+          <th onClick={this.props.onDateSort}>due</th>
           <th>edit</th>
         </tr>;
 
@@ -123,34 +198,26 @@ class Todolist extends Component {
             return(
               <EditTodo
                 key='no'
-                id={index}
                 task={task}
+                index={index}
+                clicked={null}
                 editClicked={this.editClicked}
+                hashGen={this.props.hashGen}
                 submitClicked={this.submitClicked}/>
             )
           }
           return (
             <Todo
-              task={task}
               key={index}
+              task={task}
               index={index}
               clicked={this.props.clicked}
-              editClicked={this.editClicked}/>
+              editClicked={this.editClicked}
+              hashGen={null}
+              submitClicked={null}/>
           );
         });
 
-
-
-    /*  const taskData = tasks.map((task, index) =>
-        <Todo
-          task={task}
-          key={index}
-          index={index}
-          clicked={clicked}
-          editClicked={this.editClicked}/>
-      );*/
-
-      // TODO: Use editIndex to determine where to have EditTodo...
 
       return (
         <>
@@ -163,20 +230,21 @@ class Todolist extends Component {
             <tbody>
               {todoList}
               {
-                this.state.editing ?
+                this.state.makingNewTask ?
                   <EditTodo
                     key='no'
-                    id={this.props.tasks.length}
+                    task={null}
+                    index={this.props.tasks.length}
+                    clicked={null}
                     editClicked={this.editClicked}
+                    hashGen={this.props.hashGen}
                     submitClicked={this.submitClicked}/>
                   : null
               }
             </tbody>
           </Table>
           <button
-            onClick={ () => {
-              this.setState({ editing: !this.state.editing })
-            }}>
+            onClick={this.newTaskClicked}>
             new task
           </button>
         </>
@@ -189,4 +257,19 @@ class Todolist extends Component {
 
 }
 
-export default Todolist;
+// store
+export const mapStateToProps = state => {
+  return {
+    tasks: state.tasks
+  };
+};
+
+// dispatch
+export const mapDispatchToProps = dispatch => {
+  return {
+    onDateSort:    () => dispatch({ type: 'dueDate '}),
+    onSetTask: (task) => dispatch({ type: 'ADD_TASK', task })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Todolist);

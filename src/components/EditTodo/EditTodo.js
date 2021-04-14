@@ -1,200 +1,257 @@
-import React, { useRef, useState } from 'react';
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
-// import Col from "react-bootstrap/Col";
-// import classes from "../../PostTasks/PostTask.module.css";
+import React, { Component, createRef } from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+// import { connect } from 'react-redux';
 
-// function Emoji(props) {
-//   return <span className={classes.emoji}>{props.emoji}</span>;
-// }
-
-
-/*
-< EditTodo
-    nameRef=''
-    descriptionRef=''
-    dateRef=''
-    dropdownRef ='' />
-
-
- */
-
-
-
-// return a form in line with the table
-const EditTodo = props => {
-
-  const nameRef = useRef();
-  const descriptionRef = useRef();
-  const dateRef = useRef();
-  const dropdownRef = useRef();
-
-  const chore = '🧹 chore';
-  const work = '💼 work';
-  const selfCare = '🌱 self care';
-
-  const [dropdownTitle, setDropdownTitle] = useState(selfCare);
-
-  // place holders
-  let ph_dropDown = dropdownTitle;
-  let ph_taskName = "task name";
-  let ph_taskDescription = "task description";
-  let ph_dueDate = "due date";
-
-  if (props.task) {
-    ph_dropDown = props.task.tag;
-    ph_taskName = props.task.taskName;
-    ph_taskDescription = props.task.taskDescription;
-    ph_dueDate = props.task.dueDate;
+class EditTodo extends Component {
+  state ={
+    tags: {
+      selfCare: '🌱 self care',
+      chore: '🧹 chore',
+      work: '💼 work'
+    },
+    task: {
+      tag: '',
+      taskName: '',
+      taskDescription: '',
+      dueDate: '',
+      hashKey: 0
+    },
+    default_task: {
+      tag: '',
+      taskName: 'task name',
+      taskDescription: 'task description',
+      dueDate: '',
+      hashKey: 0
+    },
+    ref: {
+      tagRef:         createRef(),
+      taskRef:        createRef(),
+      descriptionRef: createRef(),
+      dateRef:        createRef()
+    }
   }
 
-  const onDropdown = href => {
-    console.log(href.substring(1));
-    setDropdownTitle(href.substring(1));
+  componentDidMount() {
+    let task = {};
+
+    //false = creating a new task
+    if (!this.props.task) {
+      let defTask = { ...this.state.default_task };
+      defTask.tag = this.state.tags.selfCare;
+      task = defTask;
+    }
+
+    // true = editing an existing task
+    else {
+      task = {
+        tag:             this.props.task.tag,
+        taskName:        this.props.task.taskName,
+        taskDescription: this.props.task.taskDescription,
+        dueDate:         this.props.task.dueDate,
+        hashKey:         this.props.task.hashKey
+      }
+
+      const refs = { ...this.state.ref };
+      refs.taskRef.current.value        = this.props.task.taskName;
+      refs.descriptionRef.current.value = this.props.task.taskDescription;
+      refs.dateRef.current.value        = this.props.task.dueDate;
+    }
+
+    this.setState({ task: task });
+  }
+
+  dropdownHandler = event => {
+    console.log('[dropdownHandler]: ' + event);
+
+    let task = {
+      ...this.state.task,
+      tag: event
+    };
+
+    this.setState({ task });
+  }
+
+  onSubmit = () => {
+    console.log('[onSubmit]');
+
+    const {ref} = this.state;
+    const oldTask = this.props.task;
+
+    const currTask = {
+      tag:              ref.tagRef.current.innerText,
+      taskName:         ref.taskRef.current.value,
+      taskDescription:  ref.descriptionRef.current.value,
+      dueDate:          ref.dateRef.current.value
+    }
+
+    // if this is a new task
+    if (!oldTask){
+
+      // check that there's a name at least
+      console.log('submitting new task');
+      if (currTask.taskName === '') {
+        alert("please choose a task name");
+        return;
+      }
+
+      // check if fields were left blank
+      else if (
+        currTask.taskName         === '' &&
+        currTask.taskDescription  === '' &&
+        currTask.dueDate          === ''
+      )  {
+        this.props.submitClicked('empty new task');
+        return;
+      }
+
+      // submit new task
+      const updatedHashKey = this.props.hashGen(currTask);
+      const oldHashKey = 0;
+      currTask.hashKey = updatedHashKey;
+
+      this.props.submitClicked(currTask, oldHashKey);
+
+      // reset fields
+      ref.taskRef.current.value = '';
+      ref.descriptionRef.current.value = '';
+      ref.dateRef.current.value = '';
+
+      let defTask = {
+        ...this.state.default_task,
+        tag: this.state.tags.selfCare
+      };
+
+      this.setState({ task: defTask });
+      console.log(this.props);
+    }
+
+    // else this is an existing task
+    else {
+
+      console.log('submitting existing task');
+      const oldTask = {...this.props.task};
+      const newTask = {
+        tag:             ref.tagRef.current.innerText,
+        taskName:        ref.taskRef.current.value,
+        taskDescription: ref.descriptionRef.current.value,
+        dueDate:         ref.dateRef.current.value,
+      }
+
+      // no change detected
+      if (
+        newTask.tag             === oldTask.tag &&
+        newTask.taskName        === oldTask.taskName &&
+        newTask.taskDescription === oldTask.taskDescription &&
+        newTask.dueDate         === oldTask.dueDate
+      ) {
+        console.log('nothing changed');
+        this.props.submitClicked(null);
+        return;
+      }
+
+      // else, something changed
+      else {
+
+        const oldHashKey = this.props.task.hashKey;
+        const newHashKey = (
+          this.props.hashGen(
+            newTask.tag,
+            newTask.taskName,
+            newTask.taskDescription,
+            newTask.dueDate
+          )
+        );
+        newTask.hashKey = newHashKey;
+
+        this.props.submitClicked(newTask, oldHashKey);
+
+      }
+    }
+
+
+  }
+
+
+  render () {
+    const { task, tags, ref } = this.state;
+
+    return (
+      <tr>
+        <td>
+          <DropdownButton
+            id="dropdown-basic-button"
+            title={task.tag}
+            ref={ref.tagRef}>
+
+            <Dropdown.Item
+              // href={'#' + chore}
+              onSelect={this.dropdownHandler}
+              eventKey={tags.chore}>
+              {tags.chore}
+            </Dropdown.Item>
+
+            <Dropdown.Item
+              // href={'#' + work}
+              onSelect={this.dropdownHandler}
+              eventKey={tags.work}>
+              {tags.work}
+            </Dropdown.Item>
+
+            <Dropdown.Item
+              // href={'#' + selfCare}
+              onSelect={this.dropdownHandler}
+              eventKey={tags.selfCare}>
+              {tags.selfCare}
+            </Dropdown.Item>
+
+          </DropdownButton>
+
+        </td>
+        <td>
+          <input
+            type="text"
+            placeholder={task.taskName}
+            ref={ref.taskRef}/>
+        </td>
+        <td>
+          <input
+            type="text"
+            placeholder={task.taskDescription}
+            ref={ref.descriptionRef}/>
+        </td>
+        <td>
+          <input
+            type="date"
+            placeholder={task.dueDate}
+            ref={ref.dateRef}/>
+        </td>
+        <td>
+          <button
+            onClick={this.onSubmit}>
+            ✅
+          </button>
+        </td>
+      </tr>
+    );
+  }
+}
+
+/*
+
+// store
+export const mapStateToProps = state => {
+  return {
+    tasks: state.tasks
   };
-
-
-  const onSubmit = event => {
-
-    let tag = dropdownRef.current.innerText;
-    let taskName = nameRef.current.value;
-    let taskDescription = descriptionRef.current.value;
-    let dueDate = dateRef.current.value; // sometimes returns "today". Might become a problem
-
-    // fix values
-    if (taskName === '') {
-      taskName = ph_taskName;
-    }
-    if (taskDescription === '') {
-      taskDescription = ph_taskDescription;
-    }
-    if (dueDate === '') {
-      dueDate = ph_dueDate;
-    }
-
-    if (!props.task && taskName === ph_taskName) {
-       alert("please choose a task name");
-       return;
-     }
-
-    if (
-      tag === props.task.tag &&
-      taskName === props.task.taskName &&
-      taskDescription === props.task.taskDescription &&
-      dueDate === props.task.dueDate
-    ) {
-      console.log('nothing changed');
-      props.submitClicked(null);
-      return;
-    }
-
-    const updatedTask = {
-      tag: tag,
-      taskName: taskName,
-      taskDescription: taskDescription,
-      dueDate: dueDate
-    }
-
-    console.log(updatedTask);
-    // console.log("on submit: $" + tag + "$ ", taskName, taskDescription, typeof dueDate);
-    // Do something with the values. Submit the edit!
-
-
-    // props.editClicked(event, props.id, updatedTask);
-    props.submitClicked(updatedTask, props.id);
-  };
-
-  /*  const dropdown = (
-     <Dropdown>
-
-       <Dropdown.Toggle variant="success" id="dropdown-basic">
-         {this.state.formData.formDropdownSelection}
-       </Dropdown.Toggle>
-
-       <Dropdown.Menu>
-         <Dropdown.Item
-           onSelect={this.dropdownHandler}
-           eventKey="🧹 chore"
-           href="#/action-1">
-           <Emoji emoji="🧹"/>
-           chore
-         </Dropdown.Item>
-
-         <Dropdown.Item
-           onSelect={this.dropdownHandler}
-           eventKey="💼 work"
-           href="#/action-2">
-           <Emoji emoji="💼"/>
-           work
-         </Dropdown.Item>
-
-         <Dropdown.Item
-           onSelect={this.dropdownHandler}
-           eventKey="🌱 self care"
-           href="#/action-3">
-           <Emoji emoji="🌱"/>
-           self care
-         </Dropdown.Item>
-
-       </Dropdown.Menu>
-     </Dropdown>
-   );*/
-
-  return(
-    <tr>
-      <td>
-        <DropdownButton
-          id="dropdown-basic-button"
-          title={ph_dropDown}
-          ref={dropdownRef}>
-
-          <Dropdown.Item
-            href={'#' + chore}
-            onSelect={onDropdown}>
-            {chore}
-          </Dropdown.Item>
-
-          <Dropdown.Item
-            href={'#' + work}
-            onSelect={onDropdown}>
-            {work}
-          </Dropdown.Item>
-
-          <Dropdown.Item
-            href={'#' + selfCare}
-            onSelect={onDropdown}>
-            {selfCare}
-          </Dropdown.Item>
-
-        </DropdownButton>
-
-      </td>
-      <td>
-        <input
-          type="text"
-          placeholder={ph_taskName}
-          ref={nameRef}/>
-      </td>
-      <td>
-        <input
-          type="text"
-          placeholder={ph_taskDescription}
-          ref={descriptionRef}/>
-      </td>
-      <td>
-        <input
-          type="date"
-          placeholder={ph_dueDate}
-          ref={dateRef}/>
-      </td>
-      <td>
-        <button
-          onClick={onSubmit}>
-          ✅
-        </button>
-      </td>
-    </tr>
-  );
 };
 
+// dispatch
+export const mapDispatchToProps = dispatch => {
+  return {
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditTodo);
+*/
 export default EditTodo;

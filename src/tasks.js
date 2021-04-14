@@ -1,16 +1,18 @@
 const data =
   [
     {
-      tag: "chore",
+      tag: "🧹 chore",
       taskName: "Water plant",
       taskDescription: "",
-      dueDate: "today"
+      dueDate: "today",
+      hashKey: 1184996857
     },
     {
-      tag: "work",
+      tag: "💼 work",
       taskName: "Udemy",
       taskDescription: "React course. At least 5 lectures!",
-      dueDate: ""
+      dueDate: "",
+      hashKey: 1666272339
     }
   ];
 

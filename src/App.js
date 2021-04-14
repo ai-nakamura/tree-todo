@@ -1,167 +1,36 @@
-import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import { Route, Switch } from 'react-router-dom';
 
-import * as sap from './sap';
-import data from './tasks';
-// import PostTask from './PostTasks/PostTask';
-import TodoList from './containers/TodoList/TodoList';
-
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import sprout from './asset/images/sprout.png';
+import Auth from './containers/Auth/Auth';
+import Main from './containers/Main/Main';
 
 class App extends Component {
   componentDidMount() {
-    this.getData();
+    // this.props.onTryAutoSignup();
   }
 
-  state = {
-    networkError: false,
-    tasks: [],
-    myTask: 'edit button now shows an edit field!',
-  }
-
-  getData() {
-
-    sap.get((responseText) => {
-      if (responseText === null) {
-        console.log('trouble with GET request');
-        this.setState({
-          networkError: true
-        });
-        return;
-      }
-
-      let tasks = [];
-      if (responseText !== '') {
-        tasks = JSON.parse(responseText);
-      }
-
-      // update the state of the component with the result here
-      this.setState({
-        networkError: false,  // reset the error flag if it was set
-        tasks: tasks
-      });
-    });
-
-  }
-
-  postData(data) {
-    console.log('postData');
-
-    let dataStr = JSON.stringify(data);
-    if (dataStr === '[]') {
-      dataStr = '';
-    }
-    sap.post(dataStr, (responseText) => {
-      if (responseText === null) {
-        console.log('Something went wrong');
-      }
-      if (responseText === '') {
-        console.log('POST worked!');
-        this.setState({
-          tasks: data
-        });
-      }
-    });
-  }
-
-  deleteData(taskIndex) {
-
-    console.log("deleteData");
-    console.log("row to delete: " + taskIndex);
-
-    const toPost = [...this.state.tasks];
-    console.log(toPost);
-
-    const deleted = toPost.splice(taskIndex, 1);
-    console.log(deleted);
-
-    this.postData(toPost);
-
-  }
-
-/*  editData(event, taskIndex, newTask) {
-
-    event.stopPropagation();
-    console.log("editData");
-    console.log("row to edit: " + taskIndex);
-
-    let parsedData = [...this.state.tasks];
-    console.log(taskIndex);
-
-    if (taskIndex >= parsedData.length) {
-      // if edit item is >= data length, it's a new item
-      parsedData.push(newTask);
-      console.log(parsedData);
-    }
-    // else we need to replace a row
-
-    this.postData(parsedData);
-
-  }*/
-
-/*  receiveForm(newTask) {
-    // do a thing to add the new task to the existing data
-    for (const t in newTask) {
-      console.log(`${t}: ${newTask[t]}`);
-    }
-    // console.log(this.state.tasks);
-    let allTasks = [];
-    allTasks.push(...this.state.tasks);
-    allTasks.push(newTask);
-    console.log(allTasks);
-    this.postData(allTasks);
-  }*/
-
-  receiveEdit(submittedTask, taskIndex) {
-    // if index > length, push to end
-    // replace whatever task index with this new one
-    console.log(submittedTask, taskIndex);
-
-    let newTaskList = [...this.state.tasks];
-    newTaskList.splice(taskIndex, 1, submittedTask);
-    console.log(newTaskList);
-
-    this.postData(newTaskList);
-
-  }
-
-
-  render() {
+  render () {
     return (
-      <div className="App container">
-        <h1>Tree</h1>
-        <p>the start of a lovely journey</p>
-        <img src={sprout} className="Sprout" alt={"Logo, a little sprout"} />
-        <br /><br />
-
-        <h3>{this.state.myTask}</h3>
-        <br /><br />
-        {/*
-        <PostTask
-          tasks={this.state.state}
-          onSubmit={this.receiveForm.bind(this)} />
-        <br />*/}
-
-        <TodoList
-          netError={this.state.networkError}
-          tasks={this.state.tasks}
-          clicked={this.deleteData.bind(this)}
-          submitClicked={this.receiveEdit.bind(this)}
-          note={'editClicked={this.editData.bind(this)'}/>
-        <br />
-
-        <Button
-          variant="outline-primary"
-          onClick={ () => this.postData(data) }>
-          test data
-        </Button>
-
-      </div>
+      <Switch>
+        <Route path='/'      component={Main} exact />
+        <Route path='/login' component={Auth} />
+      </Switch>
     );
   }
-
 }
 
-export default App;
+
+const mapStateToProps = state => {
+  return {
+
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
