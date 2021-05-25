@@ -140,10 +140,10 @@ class EditTodo extends Component {
 
       // no change detected
       if (
-        newTask.tag             === oldTask.tag &&
-        newTask.taskName        === oldTask.taskName &&
+        newTask.tag ===             oldTask.tag &&
+        newTask.taskName ===        oldTask.taskName &&
         newTask.taskDescription === oldTask.taskDescription &&
-        newTask.dueDate         === oldTask.dueDate
+        newTask.dueDate ===         oldTask.dueDate
       ) {
         console.log('nothing changed');
         this.props.submitClicked(null);

@@ -17,8 +17,6 @@ import sprout from '../../asset/images/sprout.png';
 
 class Main extends Component {
   state = {
-    // networkError: false,
-    // tasks:  [],
     myTask: 'curr task: redirect user to main page'
   }
 
@@ -53,7 +51,6 @@ class Main extends Component {
   postData(data) {
     console.log('postData');
 
-
     let dataStr = JSON.stringify(data);
     if (dataStr === '[]') {
       dataStr = '';
@@ -64,73 +61,34 @@ class Main extends Component {
       }
       if (responseText === '') {
         console.log('POST worked!');
-
       }
     });
   }
 
   deleteData(hashKey) {
-
     console.log("deleteData");
     console.log("task to delete: " + hashKey);
-
-    // const toPost = [...this.props.tasks];
-    // console.log(toPost);
-
-    // const deleted = toPost.splice(taskIndex, 1);
-    // console.log(deleted);
-
-
     this.props.onDeleteTask(hashKey);
-
     this.postData(this.props.tasks);
-
   }
-
-/*  editData(event, taskIndex, newTask) {
-
-    event.stopPropagation();
-    console.log("editData");
-    console.log("row to edit: " + taskIndex);
-
-    let parsedData = [...this.state.tasks];
-    console.log(taskIndex);
-
-    if (taskIndex >= parsedData.length) {
-      // if edit item is >= data length, it's a new item
-      parsedData.push(newTask);
-      console.log(parsedData);
-    }
-    // else we need to replace a row
-
-    this.postData(parsedData);
-
-  }*/
-
-/*  receiveForm(newTask) {
-    // do a thing to add the new task to the existing data
-    for (const t in newTask) {
-      console.log(`${t}: ${newTask[t]}`);
-    }
-    // console.log(this.state.tasks);
-    let allTasks = [];
-    allTasks.push(...this.state.tasks);
-    allTasks.push(newTask);
-    console.log(allTasks);
-    this.postData(allTasks);
-  }*/
 
   receiveEdit(submittedNewTasks, taskIndex) {
     console.log('receivedEdit');
     this.props.onSetTask(submittedNewTasks, taskIndex);
     this.postData(submittedNewTasks);
+  }
+
+  logout() {
 
   }
 
   // from https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
   hashKeyGenerator(task) {
     const str = '' +
-      task.tag + task.taskName + task.taskDescription + task.dueDate;
+      task.tag +
+      task.taskName +
+      task.taskDescription +
+      task.dueDate;
 
     return fnv1a(str);
   }
@@ -147,18 +105,22 @@ class Main extends Component {
       <div className="App container">
 
         {not_logged_in}
+        {/*{logoutButton}*/}
+        <Button onClick={() => this.props.onLogout()}>
+          logoutButton
+        </Button>
+
         <h1>Tree</h1>
          <p>the start of a lovely journey</p>
-        <img src={sprout} className="Sprout" alt={"Logo, a little sprout"} />
+        <img
+          src={sprout}
+          className="Sprout"
+          alt={"Logo, a little sprout"}
+        />
         <br /><br />
 
         <h3>{this.state.myTask}</h3>
         <br /><br />
-        {/*
-        <PostTask
-          tasks={this.state.state}
-          onSubmit={this.receiveForm.bind(this)} />
-        <br />*/}
 
         <TodoList
           netError={this.state.networkError}
@@ -171,7 +133,8 @@ class Main extends Component {
 
         <Button
           variant="outline-primary"
-          onClick={ () => this.receiveEdit(data, 2) }>
+          onClick={() => this.receiveEdit(data, 2)}
+        >
           test data
         </Button>
 
@@ -196,7 +159,9 @@ export const mapDispatchToProps = dispatch => {
     onInit: (fetchedData) => dispatch({ type: 'INIT' , fetchedData}),
 
     onSetTask: (newTaskList, index) => dispatch({ type: 'SET_TASK_LIST', newTaskList, index }),
-    onDeleteTask:  (hashKey) => dispatch({ type: 'DELETE_TASK', hashKey })
+    onDeleteTask:  (hashKey) => dispatch({ type: 'DELETE_TASK', hashKey }),
+
+    onLogout: () => dispatch({type: 'CLEAR_TOKEN'})
   }
 }
 
